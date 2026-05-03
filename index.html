@@ -8,147 +8,229 @@
     <style>
         :root {
             --bg: #F8FAFC;
-            --glass: rgba(255, 255, 255, 0.8);
+            --glass: rgba(255, 255, 255, 0.9);
             --accent: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
             --text: #1E293B;
             --text-light: #64748B;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
 
         .screen { display: none; padding: 20px; max-width: 450px; margin: 0 auto; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 28px;
             padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
             margin-bottom: 20px;
         }
 
+        h1, h2 { font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 15px; margin-bottom: 5px; }
+
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 15px; border-radius: 18px; text-align: center; border: 1px solid #F1F5F9; }
+        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #F1F5F9; }
         .stat-val { display: block; font-size: 20px; font-weight: 700; color: #6366F1; }
-        .stat-label { font-size: 11px; text-transform: uppercase; color: var(--text-light); letter-spacing: 1px; }
 
         .btn {
             background: var(--accent); color: white; border: none; padding: 18px;
-            border-radius: 18px; font-weight: 600; width: 100%; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+            border-radius: 20px; font-weight: 600; width: 100%; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25); transition: 0.3s;
         }
-
-        .day-badge {
-            background: #EEF2FF; color: #6366F1; padding: 6px 12px;
-            border-radius: 20px; font-size: 12px; font-weight: 700;
-        }
+        .btn-outline { background: white; color: var(--text-light); border: 1px solid #E2E8F0; box-shadow: none; margin-top: 10px; }
 
         input, textarea, select {
-            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #E2E8F0;
-            margin-top: 8px; margin-bottom: 15px; background: white;
+            width: 100%; padding: 14px; border-radius: 15px; border: 1px solid #E2E8F0;
+            background: white; font-size: 16px; transition: 0.3s;
         }
+        input:focus { border-color: #6366F1; outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+
+        .day-badge { background: #EEF2FF; color: #6366F1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
 
     <div id="screen-welcome" class="screen active">
-        <div style="height: 30vh"></div>
-        <h1>Bem-vinda à sua<br>nova jornada.</h1>
-        <p style="margin: 15px 0 30px; color: var(--text-light)">Transformação consciente em 21 dias.</p>
-        <button class="btn" onclick="goTo('setup')">Começar Agora</button>
+        <div style="height: 25vh"></div>
+        <div style="font-size: 40px; margin-bottom: 20px;">✨</div>
+        <h1>Sua Melhor Versão começa agora.</h1>
+        <p style="color: var(--text-light); margin-bottom: 40px;">Um guia delicado e tecnológico para sua evolução em 21 dias.</p>
+        <button class="btn" onclick="goTo('setup')">Iniciar Jornada</button>
     </div>
 
     <div id="screen-setup" class="screen">
         <div class="glass-card">
             <h2>Configuração</h2>
-            <p>Como devemos te chamar?</p>
-            <input type="text" id="user-name" placeholder="Nome">
-            <p>Peso inicial (kg)</p>
-            <input type="number" id="start-weight" step="0.1" placeholder="00.0">
-            <button class="btn" onclick="saveSetup()">Criar Meu Diário</button>
+            <p style="font-size: 14px; color: var(--text-light)">Esses dados ficam salvos apenas no seu celular.</p>
+            
+            <label>Como quer ser chamada?</label>
+            <input type="text" id="user-name" placeholder="Seu nome">
+            
+            <label>Peso Inicial (kg)</label>
+            <input type="number" id="start-weight" step="0.1" placeholder="Ex: 65.5">
+            
+            <button class="btn" style="margin-top: 25px;" onclick="saveSetup()">Criar Meu Diário</button>
         </div>
     </div>
 
     <div id="screen-home" class="screen">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
             <h2 id="welcome-msg">Olá!</h2>
-            <span class="day-badge" id="display-date">20 de Maio</span>
+            <span class="day-badge" id="display-date">--</span>
         </div>
 
         <div class="stat-grid">
             <div class="stat-card">
-                <span class="stat-label">Dia Atual</span>
+                <span style="font-size: 11px; color: var(--text-light); text-transform: uppercase;">Jornada</span>
                 <span class="stat-val" id="current-day-num">1/21</span>
             </div>
             <div class="stat-card">
-                <span class="stat-label">Peso Perdido</span>
+                <span style="font-size: 11px; color: var(--text-light); text-transform: uppercase;">Peso Eliminado</span>
                 <span class="stat-val" id="weight-loss">0.0 kg</span>
             </div>
         </div>
 
         <div class="glass-card" style="background: var(--accent); color: white;">
-            <p style="color: rgba(255,255,255,0.8)">Progresso Geral</p>
-            <div style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 10px 0;">
-                <div id="progress-bar" style="height: 100%; background: white; width: 0%; border-radius: 10px; transition: 1s;"></div>
+            <p style="font-size: 14px; opacity: 0.9;">Evolução Geral</p>
+            <div style="height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 12px 0;">
+                <div id="progress-bar" style="height: 100%; background: white; width: 0%; border-radius: 10px; transition: 1.5s ease-in-out;"></div>
             </div>
-            <p id="progress-text" style="font-size: 12px; color: white;">0% concluído</p>
+            <p id="progress-text" style="font-size: 12px; font-weight: 600;">0% concluído</p>
         </div>
 
         <button class="btn" onclick="goTo('log')">Registrar Dia Hoje</button>
     </div>
 
+    <div id="screen-log" class="screen">
+        <div class="glass-card">
+            <h2>Hoje</h2>
+            <p id="log-date-label" style="font-size: 14px; color: var(--text-light); margin-bottom: 10px;"></p>
+
+            <label>Peso Atual (kg)</label>
+            <input type="number" id="log-weight" step="0.1" placeholder="00.0">
+
+            <label>Horário do Jejum</label>
+            <input type="text" id="log-fasting" placeholder="Ex: 20h às 12h">
+
+            <label>O que você comeu hoje?</label>
+            <textarea id="log-food" rows="3" placeholder="Descreva brevemente..."></textarea>
+
+            <label>Copos de Água (Meta: 8)</label>
+            <input type="number" id="log-water" value="0">
+
+            <label>Seguiu o plano?</label>
+            <select id="log-status">
+                <option value="sim">Sim, segui! ✨</option>
+                <option value="nao">Não desta vez.</option>
+            </select>
+
+            <button class="btn" style="margin-top: 25px;" onclick="saveDailyLog()">Salvar Registro</button>
+            <button class="btn btn-outline" onclick="goTo('home')">Cancelar</button>
+        </div>
+    </div>
+
     <script>
+        // SISTEMA DE ESTADO E PERSISTÊNCIA
         let state = JSON.parse(localStorage.getItem('evolucao_21')) || {
-            userName: '', startWeight: 0, startDate: null, logs: {}
+            userName: '', 
+            startWeight: 0, 
+            startDate: null, 
+            logs: {}
         };
 
-        function goTo(s) {
-            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
-            document.getElementById('screen-'+s).classList.add('active');
-            if(s === 'home') updateDashboard();
+        function saveState() {
+            localStorage.setItem('evolucao_21', JSON.stringify(state));
+        }
+
+        function goTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenId).classList.add('active');
+            
+            if(screenId === 'home') updateDashboard();
+            if(screenId === 'log') {
+                const hoje = new Date();
+                document.getElementById('log-date-label').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+            }
+            window.scrollTo(0,0);
         }
 
         function saveSetup() {
-            state.userName = document.getElementById('user-name').value;
-            state.startWeight = parseFloat(document.getElementById('start-weight').value);
-            state.startDate = new Date().getTime(); // Salva o exato momento do início
-            localStorage.setItem('evolucao_21', JSON.stringify(state));
+            const name = document.getElementById('user-name').value;
+            const weight = document.getElementById('start-weight').value;
+            
+            if(!name || !weight) return alert("Por favor, preencha seu nome e peso.");
+
+            state.userName = name;
+            state.startWeight = parseFloat(weight);
+            state.startDate = new Date().getTime(); 
+            saveState();
             goTo('home');
         }
 
         function updateDashboard() {
             document.getElementById('welcome-msg').innerText = `Oi, ${state.userName}! ✨`;
             
-            // Lógica de Data Atual
+            // Exibir Data
             const hoje = new Date();
-            const opcoes = { day: 'numeric', month: 'long' };
-            document.getElementById('display-date').innerText = hoje.toLocaleDateString('pt-BR', opcoes);
+            document.getElementById('display-date').innerText = hoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
 
-            // Cálculo do Dia da Jornada
+            // Cálculo do Dia
             const inicio = new Date(state.startDate);
-            const diff = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
-            const diaAtual = Math.min(Math.max(diff, 1), 21);
+            const diffDias = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
+            const diaAtual = Math.min(Math.max(diffDias, 1), 21);
             document.getElementById('current-day-num').innerText = `${diaAtual}/21`;
 
-            // Cálculo de Peso
+            // Cálculo de Peso Perdido
             const logsArray = Object.values(state.logs);
             if(logsArray.length > 0) {
-                const ultimoPeso = logsArray[logsArray.length - 1].weight;
-                const perda = state.startWeight - ultimoPeso;
+                const ultimoLog = logsArray[logsArray.length - 1];
+                const perda = state.startWeight - ultimoLog.weight;
                 document.getElementById('weight-loss').innerText = `${perda.toFixed(1)} kg`;
             }
 
             // Barra de Progresso
-            const perc = (Object.keys(state.logs).length / 21) * 100;
+            const totalRegistros = Object.keys(state.logs).length;
+            const perc = (totalRegistros / 21) * 100;
             document.getElementById('progress-bar').style.width = perc + '%';
-            document.getElementById('progress-text').innerText = `${Math.round(perc)}% concluído`;
+            document.getElementById('progress-text').innerText = `${Math.round(perc)}% concluído (${totalRegistros}/21 dias)`;
         }
 
-        if(state.startDate) goTo('home');
+        function saveDailyLog() {
+            const peso = document.getElementById('log-weight').value;
+            if(!peso) return alert("Por favor, informe seu peso de hoje.");
+
+            // Identificar qual dia da jornada é hoje para salvar no lugar certo
+            const inicio = new Date(state.startDate);
+            const hoje = new Date();
+            const diaJornada = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
+
+            state.logs[diaJornada] = {
+                weight: parseFloat(peso),
+                fasting: document.getElementById('log-fasting').value,
+                food: document.getElementById('log-food').value,
+                water: document.getElementById('log-water').value,
+                status: document.getElementById('log-status').value,
+                timestamp: new Date().getTime()
+            };
+
+            saveState();
+            alert("Dia " + diaJornada + " registrado com sucesso!");
+            goTo('home');
+        }
+
+        // Verificação Inicial: Se já tem cadastro, vai direto pro Home
+        window.onload = () => {
+            if(state.startDate) {
+                goTo('home');
+            }
+        };
     </script>
 </body>
 </html>
