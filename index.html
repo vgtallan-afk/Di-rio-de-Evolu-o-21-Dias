@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>ClaraMente - Evolução</title>
+    <title>Diário de Evolução</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,112 +22,105 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease; padding-bottom: 120px; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.4s ease; padding-bottom: 120px; }
 
         .screen { display: none; padding: 25px 20px; animation: fade 0.4s ease; }
         .screen.active { display: block; }
         @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1 { font-size: 26px; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h1 { font-size: 26px; font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; color: var(--text); }
         h2 { font-size: 18px; font-weight: 700; margin-bottom: 15px; }
         
         .glass-card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 28px; padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; }
 
-        /* Timer de Jejum */
-        .timer-container { position: relative; width: 220px; height: 220px; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: conic-gradient(var(--primary) 0%, transparent 0); border: 2px solid rgba(0,0,0,0.02); box-shadow: inset 0 0 20px rgba(0,0,0,0.02); }
-        .timer-inner { width: 190px; height: 190px; background: var(--bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; box-shadow: var(--shadow); }
-        .timer-time { font-size: 36px; font-weight: 800; color: var(--text); }
-        .timer-phase { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-top: 5px; text-align: center; padding: 0 10px; }
+        /* Gráfico do IMC */
+        .imc-container { margin-top: 15px; }
+        .imc-scale { height: 10px; border-radius: 10px; background: linear-gradient(to right, #60A5FA 0%, #34D399 25%, #FBBF24 60%, #EF4444 100%); position: relative; margin: 20px 0; }
+        .imc-marker { width: 18px; height: 18px; background: #fff; border: 3px solid var(--text); border-radius: 50%; position: absolute; top: -4px; transform: translateX(-50%); transition: left 1s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .imc-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-light); font-weight: 600; }
 
-        /* Forms */
+        /* Habit Tracker Grid */
+        .habit-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+        .habit-table th { padding: 8px; color: var(--text-light); }
+        .habit-table td { padding: 10px 4px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .habit-check { width: 24px; height: 24px; border-radius: 6px; border: 1px solid #E2E8F0; display: inline-block; cursor: pointer; }
+        .habit-check.active { background: var(--primary); border-color: var(--primary); }
+
+        /* Form Estilo ClaraMente */
         label { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
-        input, select { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(148,163,184,0.2); background: rgba(255,255,255,0.5); font-size: 16px; color: var(--text); margin-bottom: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.1); }
+        input, select, textarea { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(148,163,184,0.2); background: rgba(255,255,255,0.5); font-size: 16px; color: var(--text); margin-bottom: 15px; outline: none; }
         
-        .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 20px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(129, 140, 248, 0.3); transition: 0.2s; }
-        .btn:active { transform: scale(0.98); }
+        .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 20px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(129, 140, 248, 0.3); }
 
-        .emoji-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .emoji-btn { font-size: 24px; background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.05); padding: 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .emoji-btn.selected { background: var(--primary); transform: scale(1.1); border-color: var(--primary); }
-
-        /* Nav Bar */
-        .tab-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: var(--glass); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 30px; display: flex; justify-content: space-around; padding: 15px 10px; z-index: 1000; box-shadow: var(--shadow); }
-        .tab-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.4; transition: 0.3s; flex: 1; }
-        .tab-item.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
-        .tab-icon { font-size: 22px; margin-bottom: 4px; }
-        .tab-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .breathe-circle { width: 150px; height: 150px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; margin: 50px auto; opacity: 0.8; transition: all 4s ease-in-out; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 20px; box-shadow: 0 0 50px rgba(129, 140, 248, 0.4); }
-        .breathe-circle.inhale { transform: scale(1.6); }
-        
-        .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
-        .badge { background: rgba(0,0,0,0.03); padding: 15px 5px; border-radius: 16px; opacity: 0.4; filter: grayscale(1); transition: 0.3s; }
-        .badge.unlocked { opacity: 1; filter: grayscale(0); background: rgba(244, 114, 182, 0.1); }
-        .badge-icon { font-size: 30px; margin-bottom: 5px; }
-        .badge-title { font-size: 10px; font-weight: 700; color: var(--text); }
+        /* Tab Bar Navigation */
+        .tab-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: var(--glass); backdrop-filter: blur(25px); border-radius: 30px; display: flex; justify-content: space-around; padding: 15px 10px; z-index: 1000; box-shadow: var(--shadow); border: 1px solid var(--glass-border); }
+        .tab-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.4; transition: 0.3s; flex: 1; color: var(--text); }
+        .tab-item.active { opacity: 1; color: var(--primary); }
+        .tab-icon { font-size: 20px; margin-bottom: 4px; }
+        .tab-label { font-size: 9px; font-weight: 700; text-transform: uppercase; }
 
         .streak-pill { background: rgba(244, 114, 182, 0.15); color: var(--secondary); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
-
-        .result-box { display: none; margin-top: 20px; background: var(--bg); border: 1px solid rgba(129, 140, 248, 0.3); padding: 20px; border-radius: 20px; }
-        .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px; }
-        .result-item:last-child { border-bottom: none; }
-        .result-item strong { color: var(--primary); font-weight: 800; }
-        .timeline-box { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px; border-radius: 16px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 14px; }
+        
+        .install-guide { background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; font-size: 12px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="view-home" class="screen active">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h1 id="home-name">ClaraMente.</h1>
+            <h1>Evolução.</h1>
             <div class="streak-pill">🔥 <span id="home-streak">0</span></div>
         </div>
 
         <div class="glass-card">
-            <h2 style="text-align: center; color: var(--text-light); font-size: 14px; font-weight: 600;">Status do Jejum</h2>
-            <div class="timer-container" id="fasting-ring">
-                <div class="timer-inner">
-                    <div class="timer-time" id="fasting-time">00:00:00</div>
-                    <div class="timer-phase" id="fasting-phase">Alimentação</div>
-                </div>
+            <h2>Hoje é o Dia <span id="current-day">1</span></h2>
+            <div style="height: 8px; background: rgba(0,0,0,0.05); border-radius: 10px; margin: 15px 0; overflow: hidden;">
+                <div id="p-bar" style="width: 5%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: 1s;"></div>
             </div>
-            <button class="btn" id="btn-fast" onclick="toggleFasting()" style="margin-top: 10px;">Iniciar Jejum Agora</button>
+            <button class="btn" onclick="nav('log')">Registrar Agora</button>
         </div>
 
         <div class="glass-card">
-            <h2>Pílula de Conhecimento 🧠</h2>
-            <p id="daily-tip" style="font-size: 14px; line-height: 1.6; opacity: 0.9;">A hidratação correta é a chave. Muitas vezes a sensação de fome é apenas o seu corpo pedindo água.</p>
+            <h2>Rastreador de Hábitos</h2>
+            <table class="habit-table">
+                <tr><th>Hábitos</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th><th>D</th></tr>
+                <tr><td>Água</td><td><div class="habit-check active"></div></td><td><div class="habit-check"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>Jejum</td><td><div class="habit-check"></div></td><td><div class="habit-check"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>Sem Doces</td><td><div class="habit-check"></div></td><td><div class="habit-check"></div></td><td></td><td></td><td></td><td></td><td></td></tr>
+            </table>
         </div>
     </div>
 
     <div id="view-hub" class="screen">
         <h1>Bio-Hub.</h1>
-        <p style="margin-bottom: 20px; opacity: 0.7; font-size: 14px;">Planejamento preciso para o seu objetivo.</p>
+        <div class="glass-card">
+            <h2>Análise Corporal</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div><label>Peso (kg)</label><input type="number" id="c-w" placeholder="70.0"></div>
+                <div><label>Altura (cm)</label><input type="number" id="c-h" placeholder="165"></div>
+            </div>
+            <button class="btn" onclick="calcIMC()">Analisar IMC</button>
+
+            <div id="imc-result" class="imc-container" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <span style="font-size: 14px; font-weight: 600;">Seu IMC: <strong id="val-imc">22.5</strong></span>
+                    <span id="txt-imc" style="font-size: 12px; font-weight: 800; text-transform: uppercase;">Saudável</span>
+                </div>
+                <div class="imc-scale">
+                    <div class="imc-marker" id="imc-marker"></div>
+                </div>
+                <div class="imc-labels">
+                    <span>BAIXO</span><span>IDEAL</span><span>ALTO</span><span>OBS</span>
+                </div>
+            </div>
+        </div>
 
         <div class="glass-card">
-            <h2>Calculadora de Metas</h2>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><label>Peso Atual (kg)</label><input type="number" id="calc-w" placeholder="Ex: 75.0"></div>
-                <div><label>Peso Alvo (kg)</label><input type="number" id="calc-gw" placeholder="Ex: 62.0"></div>
-                <div><label>Idade</label><input type="number" id="calc-a" placeholder="Ex: 30"></div>
-                <div><label>Altura (cm)</label><input type="number" id="calc-h" placeholder="Ex: 165"></div>
-            </div>
-            <label>Cintura (cm) - Opcional</label>
-            <input type="number" id="calc-c" placeholder="Ex: 75">
-            
-            <button class="btn" onclick="runHubCalcs()">Mapear Minha Rota</button>
-
-            <div class="result-box" id="hub-results">
-                <div class="result-item"><span>Seu IMC Atual</span><strong id="res-imc">--</strong></div>
-                <div class="result-item"><span>Distância do Alvo</span><strong id="res-gap">--</strong></div>
-                <div class="result-item"><span>Calorias Diárias (Déficit)</span><strong id="res-cal">-- kcal</strong></div>
-                <div class="result-item"><span>Proteína Recomendada</span><strong id="res-prot">-- g</strong></div>
-                <div class="result-item"><span>Meta de Água Pessoal</span><strong id="res-water">-- ml</strong></div>
-                
-                <div class="timeline-box" id="res-timeline">
-                    Sua projeção de tempo aparecerá aqui.
-                </div>
+            <h2>Metas Sugeridas</h2>
+            <p style="font-size: 13px; margin-bottom: 10px;">Com base no seu perfil:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; font-weight: 700;">
+                <div style="background: white; padding: 10px; border-radius: 12px;">💧 Água: <span id="r-water">2.4L</span></div>
+                <div style="background: white; padding: 10px; border-radius: 12px;">🥩 Prot: <span id="r-prot">110g</span></div>
             </div>
         </div>
     </div>
@@ -135,270 +128,105 @@
     <div id="view-log" class="screen">
         <h1>Registro.</h1>
         <div class="glass-card">
-            <h2>Corpo e Mente</h2>
-            
-            <label>Peso de Hoje (kg)</label>
-            <input type="number" id="log-w" step="0.1">
-
-            <label>Fase do Ciclo Menstrual</label>
-            <select id="log-cycle">
-                <option value="Menstruação">🩸 Menstruação (Descanso)</option>
-                <option value="Folicular">🌱 Fase Folicular (Energia Alta)</option>
-                <option value="Ovulação">🌸 Ovulação (Pico de Força)</option>
-                <option value="Lútea">🍂 Fase Lútea (Foco e Cuidado)</option>
-            </select>
-
-            <label>Como foi seu sono?</label>
-            <div class="emoji-grid" id="sleep-grid">
-                <div class="emoji-btn" onclick="selEmoji('sleep', this, '😴')">😴</div>
-                <div class="emoji-btn" onclick="selEmoji('sleep', this, '😐')">😐</div>
-                <div class="emoji-btn" onclick="selEmoji('sleep', this, '😵‍💫')">😵‍💫</div>
-                <div class="emoji-btn" onclick="selEmoji('sleep', this, '🤬')">🤬</div>
-            </div>
-
-            <label>Nível de Estresse</label>
-            <div class="emoji-grid" id="stress-grid">
-                <div class="emoji-btn" onclick="selEmoji('stress', this, 'Zen')">🧘‍♀️</div>
-                <div class="emoji-btn" onclick="selEmoji('stress', this, 'Ok')">🙂</div>
-                <div class="emoji-btn" onclick="selEmoji('stress', this, 'Alto')">🤯</div>
-                <div class="emoji-btn" onclick="selEmoji('stress', this, 'Caos')">🔥</div>
-            </div>
-
-            <button class="btn" onclick="saveLog()">Salvar Dia</button>
-        </div>
-    </div>
-
-    <div id="view-sos" class="screen">
-        <h1 style="text-align: center;">SOS.</h1>
-        <p style="text-align: center; opacity: 0.7;">Fome emocional ou ansiedade? Respire.</p>
-        
-        <div class="breathe-circle" id="b-circle">Inspire</div>
-        
-        <div style="text-align: center; margin-top: 60px;">
-            <button class="btn" style="width: 200px;" onclick="startBreathing()">Iniciar Ciclo</button>
+            <label>Peso de Hoje</label>
+            <input type="number" id="l-w" step="0.1">
+            <label>Horário do Jejum</label>
+            <input type="text" id="l-fast" placeholder="Ex: 20h às 12h">
+            <label>Alimentação</label>
+            <textarea id="l-food" placeholder="O que comeu hoje?"></textarea>
+            <label>Seguiu o plano?</label>
+            <select id="l-status"><option>Sim ✨</option><option>Não</option></select>
+            <button class="btn" onclick="saveDay()">Salvar Registro</button>
         </div>
     </div>
 
     <div id="view-profile" class="screen">
         <h1>Perfil.</h1>
         <div class="glass-card">
-            <h2>Suas Conquistas</h2>
-            <div class="badge-grid">
-                <div class="badge" id="bdg-start"><div class="badge-icon">🌱</div><div class="badge-title">O Início</div></div>
-                <div class="badge" id="bdg-water"><div class="badge-icon">💧</div><div class="badge-title">Hidratada</div></div>
-                <div class="badge" id="bdg-fire"><div class="badge-icon">🔥</div><div class="badge-title">7 Dias Foco</div></div>
-                <div class="badge" id="bdg-fast"><div class="badge-icon">⏳</div><div class="badge-title">Jejum 16h</div></div>
-                <div class="badge" id="bdg-mind"><div class="badge-icon">🧘‍♀️</div><div class="badge-title">Zen Master</div></div>
-                <div class="badge" id="bdg-moon"><div class="badge-icon">🌙</div><div class="badge-title">Sono Bom</div></div>
+            <h2>Como Instalar</h2>
+            <div class="install-guide">
+                <strong>iPhone:</strong> Clica no ícone de partilha (quadrado com seta) e depois em "Adicionar ao Ecrã Principal".<br><br>
+                <strong>Android:</strong> Clica nos 3 pontos e seleciona "Instalar" ou "Adicionar à tela inicial".
             </div>
         </div>
 
         <div class="glass-card">
-            <h2>Compartilhar Vitória</h2>
-            <p style="font-size: 13px; opacity: 0.8; margin-bottom: 15px;">Gere um resumo estético para seus Stories.</p>
-            <button class="btn" style="background: var(--text); color: var(--bg);" onclick="exportStory()">Copiar para o Instagram</button>
+            <h2>Reflexão Final</h2>
+            <label>O que mudou no seu corpo?</label>
+            <textarea id="r-body"></textarea>
+            <button class="btn" onclick="alert('Reflexão salva!')">Salvar Reflexão</button>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding: 0 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
             <span style="font-weight: 600;">Modo Escuro</span>
-            <input type="checkbox" id="theme-sw" style="width: auto; transform: scale(1.5);" onchange="toggleTheme()">
+            <input type="checkbox" onchange="toggleTheme()" style="transform: scale(1.5);">
         </div>
     </div>
 
     <div class="tab-bar">
-        <div class="tab-item active" onclick="nav('home')" id="t-home"><span class="tab-icon">✨</span><span class="tab-label">Home</span></div>
-        <div class="tab-item" onclick="nav('hub')" id="t-hub"><span class="tab-icon">🧬</span><span class="tab-label">Hub</span></div>
-        <div class="tab-item" onclick="nav('log')" id="t-log"><span class="tab-icon">📝</span><span class="tab-label">Log</span></div>
-        <div class="tab-item" onclick="nav('sos')" id="t-sos"><span class="tab-icon">🫁</span><span class="tab-label">SOS</span></div>
-        <div class="tab-item" onclick="nav('profile')" id="t-profile"><span class="tab-icon">👑</span><span class="tab-label">Perfil</span></div>
+        <div class="tab-item active" onclick="nav('home')" id="t-home"><span class="tab-icon">🏠</span><span class="tab-label">Home</span></div>
+        <div class="tab-item" onclick="nav('hub')" id="t-hub"><span class="tab-icon">📊</span><span class="tab-label">Hub</span></div>
+        <div class="tab-item" onclick="nav('log')" id="t-log"><span class="tab-icon">✏️</span><span class="tab-label">Log</span></div>
+        <div class="tab-item" onclick="nav('profile')" id="t-profile"><span class="tab-icon">👤</span><span class="tab-label">Perfil</span></div>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('clara_mente_db')) || {
-            user: { streak: 0, lastDate: null, theme: 'light' },
-            fasting: { isFasting: false, startTime: null },
-            logs: {},
-            badges: { start: true, water: false, fire: false, fast: false, mind: false, moon: false }
-        };
+        let db = JSON.parse(localStorage.getItem('diario_evol_db')) || { streak: 0, logs: {}, theme: 'light' };
 
-        let tempLog = { sleep: '', stress: '' };
-        let timerInterval;
-
-        function save() { localStorage.setItem('clara_mente_db', JSON.stringify(db)); }
-
-        function nav(view) {
+        function nav(v) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            document.getElementById('t-' + view).classList.add('active');
-            window.scrollTo(0,0);
-            if(view === 'home') initHome();
-            if(view === 'profile') renderBadges();
+            document.getElementById('view-' + v).classList.add('active');
+            document.getElementById('t-' + v).classList.add('active');
+            if(v === 'home') updateHome();
         }
 
-        function toggleFasting() {
-            if(db.fasting.isFasting) {
-                const diffHours = (new Date().getTime() - db.fasting.startTime) / (1000 * 60 * 60);
-                if(diffHours >= 16) { db.badges.fast = true; save(); }
-                db.fasting.isFasting = false;
-                db.fasting.startTime = null;
-                document.getElementById('btn-fast').innerText = "Iniciar Jejum Agora";
-                document.getElementById('fasting-ring').style.background = `conic-gradient(var(--primary) 0%, transparent 0)`;
-            } else {
-                db.fasting.isFasting = true;
-                db.fasting.startTime = new Date().getTime();
-                document.getElementById('btn-fast').innerText = "Quebrar Jejum (Comer)";
-            }
-            save(); initHome();
-        }
+        function calcIMC() {
+            const w = parseFloat(document.getElementById('c-w').value);
+            const h = parseFloat(document.getElementById('c-h').value) / 100;
+            if(!w || !h) return;
+            const imc = (w / (h * h)).toFixed(1);
+            document.getElementById('val-imc').innerText = imc;
+            document.getElementById('imc-result').style.display = 'block';
 
-        function initHome() {
-            document.getElementById('home-streak').innerText = db.user.streak;
-            clearInterval(timerInterval);
+            let label = "Saudável";
+            let color = "#34D399";
+            let pos = 50;
 
-            if(db.fasting.isFasting && db.fasting.startTime) {
-                document.getElementById('btn-fast').innerText = "Quebrar Jejum (Comer)";
-                timerInterval = setInterval(() => {
-                    const diffMs = new Date().getTime() - db.fasting.startTime;
-                    const hrs = Math.floor(diffMs / (1000 * 60 * 60));
-                    const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                    const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
-                    
-                    document.getElementById('fasting-time').innerText = 
-                        `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-                    
-                    let phase = "Glicogênio Ativo";
-                    let perc = Math.min((hrs / 16) * 100, 100); 
-                    
-                    if(hrs >= 16) phase = "Autofagia ♻️";
-                    else if(hrs >= 14) phase = "Queima de Gordura 🔥";
-                    else if(hrs >= 12) phase = "Cetose Leve 🧠";
-                    else if(hrs >= 4) phase = "Queda de Insulina 📉";
+            if(imc < 18.5) { label = "Abaixo do Peso"; color = "#60A5FA"; pos = 15; }
+            else if(imc >= 25 && imc < 30) { label = "Sobrepeso"; color = "#FBBF24"; pos = 75; }
+            else if(imc >= 30) { label = "Obesidade"; color = "#EF4444"; pos = 90; }
 
-                    document.getElementById('fasting-phase').innerText = phase;
-                    document.getElementById('fasting-ring').style.background = `conic-gradient(var(--primary) ${perc}%, transparent 0)`;
-                }, 1000);
-            } else {
-                document.getElementById('fasting-time').innerText = "00:00:00";
-                document.getElementById('fasting-phase').innerText = "Modo Alimentação";
-                document.getElementById('fasting-ring').style.background = `conic-gradient(var(--primary) 0%, transparent 0)`;
-            }
-        }
-
-        // --- NOVA LÓGICA DA CALCULADORA INTELIGENTE ---
-        function runHubCalcs() {
-            const w = parseFloat(document.getElementById('calc-w').value);
-            const gw = parseFloat(document.getElementById('calc-gw').value);
-            const a = parseFloat(document.getElementById('calc-a').value);
-            const h = parseFloat(document.getElementById('calc-h').value);
-
-            if(!w || !gw || !h || !a) return alert("Preencha Peso Atual, Peso Alvo, Idade e Altura.");
-
-            const imc = (w / ((h/100)*(h/100))).toFixed(1);
-            const tmb = 655 + (9.6 * w) + (1.8 * h) - (4.7 * a);
-            const water = Math.round(w * 35);
+            document.getElementById('txt-imc').innerText = label;
+            document.getElementById('txt-imc').style.color = color;
+            document.getElementById('imc-marker').style.left = pos + '%';
             
-            let gap = w - gw;
-            let timeMsg = "";
-            let calDaily = 0;
-            let prot = Math.round(gw * 2.0); // Proteína baseada no peso alvo
-
-            if(gap > 0) { // Quer emagrecer
-                calDaily = Math.round(tmb * 1.2 - 500); // TMB * atividade leve - deficit seguro
-                const semanas = Math.round(gap / 0.5); // Perda segura de 0.5kg por semana
-                timeMsg = `⏳ Faltam ${gap.toFixed(1)}kg. Focando no plano, você atinge a meta em aproximadamente ${semanas} semanas.`;
-                document.getElementById('res-gap').innerText = `Perder ${gap.toFixed(1)} kg`;
-            } else if (gap < 0) { // Quer ganhar
-                gap = Math.abs(gap);
-                calDaily = Math.round(tmb * 1.2 + 300); // Superávit
-                const semanas = Math.round(gap / 0.3); // Ganho limpo
-                timeMsg = `💪 Faltam ${gap.toFixed(1)}kg. Focando no treino, o ganho de massa ideal leva cerca de ${semanas} semanas.`;
-                document.getElementById('res-gap').innerText = `Ganhar ${gap.toFixed(1)} kg`;
-            } else {
-                calDaily = Math.round(tmb * 1.2);
-                timeMsg = "✨ Você já está no seu peso alvo! O foco agora é manutenção e tonificação.";
-                document.getElementById('res-gap').innerText = `Manutenção`;
-            }
-
-            document.getElementById('hub-results').style.display = 'block';
-            document.getElementById('res-imc').innerText = imc;
-            document.getElementById('res-cal').innerText = calDaily + " kcal";
-            document.getElementById('res-water').innerText = water + " ml";
-            document.getElementById('res-prot').innerText = prot + " g";
-            document.getElementById('res-timeline').innerText = timeMsg;
+            document.getElementById('r-water').innerText = (w * 35 / 1000).toFixed(1) + "L";
+            document.getElementById('r-prot').innerText = Math.round(w * 1.6) + "g";
         }
 
-        function selEmoji(type, el, val) {
-            document.querySelectorAll(`#${type}-grid .emoji-btn`).forEach(b => b.classList.remove('selected'));
-            el.classList.add('selected');
-            tempLog[type] = val;
+        function updateHome() {
+            const days = Object.keys(db.logs).length;
+            document.getElementById('current-day').innerText = days + 1;
+            document.getElementById('p-bar').style.width = ((days / 21) * 100) + '%';
+            document.getElementById('home-streak').innerText = db.streak;
         }
 
-        function saveLog() {
-            const w = document.getElementById('log-w').value;
-            if(!w) return alert("Insira o peso de hoje.");
-            
-            const hoje = new Date().toLocaleDateString();
-            if(db.logs[hoje]) return alert("Você já registrou seu dia hoje!");
-
-            const ontem = new Date(); ontem.setDate(ontem.getDate() - 1);
-            if(db.user.lastDate === ontem.toLocaleDateString()) {
-                db.user.streak++;
-                if(db.user.streak >= 7) db.badges.fire = true;
-            } else if(db.user.lastDate !== hoje) {
-                db.user.streak = 1;
-            }
-
-            if(tempLog.sleep === '😴') db.badges.moon = true;
-            if(tempLog.stress === 'Zen') db.badges.mind = true;
-
-            db.logs[hoje] = { weight: w, cycle: document.getElementById('log-cycle').value, sleep: tempLog.sleep, stress: tempLog.stress };
-            db.user.lastDate = hoje; save();
-            alert("Dia registrado no seu diário! ✨"); nav('home');
-        }
-
-        function startBreathing() {
-            const circle = document.getElementById('b-circle');
-            let cycle = 0;
-            circle.innerText = "Inspire..."; circle.classList.add('inhale');
-            const interval = setInterval(() => {
-                cycle++;
-                if(cycle % 2 !== 0) { circle.innerText = "Expire..."; circle.classList.remove('inhale'); } 
-                else { circle.innerText = "Inspire..."; circle.classList.add('inhale'); }
-                if(cycle >= 6) { clearInterval(interval); circle.innerText = "Pronta."; circle.classList.remove('inhale'); }
-            }, 4000);
-        }
-
-        function renderBadges() {
-            Object.keys(db.badges).forEach(k => {
-                if(db.badges[k]) document.getElementById('bdg-' + k)?.classList.add('unlocked');
-            });
-        }
-
-        function exportStory() {
-            const text = `✨ Minha Jornada ClaraMente ✨\n\n🔥 Ofensiva: ${db.user.streak} dias de foco\n💧 Evoluindo corpo e mente.\n\n#ClaraMente #BiohackingFeminino`;
-            navigator.clipboard.writeText(text).then(() => alert("Texto copiado! Agora é só colar no seu Story. 📸"));
+        function saveDay() {
+            const date = new Date().toLocaleDateString();
+            db.logs[date] = { weight: document.getElementById('l-w').value };
+            db.streak++;
+            localStorage.setItem('diario_evol_db', JSON.stringify(db));
+            alert("Dia registrado! 🔥");
+            nav('home');
         }
 
         function toggleTheme() {
-            const t = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            const t = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', t);
-            db.user.theme = t; save();
         }
 
-        window.onload = () => {
-            document.body.setAttribute('data-theme', db.user.theme);
-            document.getElementById('theme-sw').checked = db.user.theme === 'dark';
-            
-            const tips = [
-                "A hidratação correta é a chave. Muitas vezes a fome é apenas o corpo pedindo água.",
-                "O estresse alto eleva o cortisol e trava o emagrecimento. Respire fundo.",
-                "Durante a fase lútea, retenção de líquido é normal. Não brigue com a balança.",
-                "O jejum não é sobre passar fome, é sobre dar descanso aos seus órgãos."
-            ];
-            document.getElementById('daily-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
-            initHome();
-        };
+        window.onload = () => { updateHome(); };
     </script>
 </body>
 </html>
