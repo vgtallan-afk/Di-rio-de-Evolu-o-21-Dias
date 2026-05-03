@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Diário de Evolução</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --glass: rgba(255, 255, 255, 0.7);
+            --accent: linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+            --text-main: #2D3436;
+            --text-sub: #636E72;
+            --radius: 24px;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Estrutura de Telas */
+        .screen {
+            display: none;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilo Glassmorphism */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-weight: 700; font-size: 24px; margin-bottom: 8px; letter-spacing: -0.5px; }
+        p { color: var(--text-sub); font-size: 14px; line-height: 1.6; }
+
+        /* Botões Modernos */
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 106, 136, 0.3);
+        }
+        .btn:active { transform: scale(0.98); }
+
+        /* Inputs */
+        input, textarea, select {
+            width: 100%;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            font-family: inherit;
+        }
+
+        /* Grid de Hábitos */
+        .habit-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .habit-dot {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .habit-dot.done { background: var(--accent); color: white; }
+
+        /* Progress Bar */
+        .progress-container {
+            height: 12px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="screen-welcome" class="screen active">
+        <div class="glass-card" style="text-align: center; margin-top: 50px;">
+            <div style="font-size: 50px; margin-bottom: 20px;">✨</div>
+            <h1>Sua Melhor Versão</h1>
+            <p>Em 21 dias, vamos transformar seus hábitos e sua mentalidade de forma leve e consciente.</p>
+            <button class="btn" style="margin-top: 30px;" onclick="goTo('setup')">Começar Jornada</button>
+        </div>
+    </div>
+
+    <div id="screen-setup" class="screen">
+        <div class="glass-card">
+            <h1>Configuração</h1>
+            <p>Para onde vamos?</p>
+            <label>Seu Nome</label>
+            <input type="text" id="user-name" placeholder="Como quer ser chamada?">
+            <label style="margin-top: 15px; display: block;">Peso Inicial (kg)</label>
+            <input type="number" id="start-weight" step="0.1">
+            <button class="btn" style="margin-top: 30px;" onclick="saveSetup()">Salvar e Iniciar</button>
+        </div>
+    </div>
+
+    <div id="screen-home" class="screen">
+        <div class="glass-card">
+            <h1 id="welcome-text">Olá!</h1>
+            <p>Dia <span id="current-day-num">1</span> de 21</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="main-progress"></div>
+            </div>
+            <button class="btn" onclick="goTo('log')">Registrar Dia</button>
+        </div>
+
+        <div class="glass-card">
+            <h3>Seu Progresso</h3>
+            <div class="habit-grid" id="main-habit-grid">
+                </div>
+        </div>
+    </div>
+
+    <div id="screen-log" class="screen">
+        <div class="glass-card">
+            <h1>Registro Hoje</h1>
+            <label>Peso do dia (kg)</label>
+            <input type="number" id="log-weight" step="0.1">
+            
+            <label style="margin-top: 15px; display: block;">Como foi sua alimentação?</label>
+            <textarea id="log-food" rows="2" placeholder="O que você comeu hoje?"></textarea>
+
+            <label style="margin-top: 15px; display: block;">Horário do Jejum</label>
+            <input type="text" id="log-fasting" placeholder="Ex: 20h às 12h">
+
+            <label style="margin-top: 15px; display: block;">Copos de Água (Meta: 8)</label>
+            <input type="number" id="log-water" value="0">
+
+            <label style="margin-top: 15px; display: block;">Seguiu o plano?</label>
+            <select id="log-status">
+                <option value="sim">Sim, com certeza! ✨</option>
+                <option value="nao">Não desta vez.</option>
+            </select>
+
+            <button class="btn" style="margin-top: 30px;" onclick="saveDailyLog()">Finalizar Dia</button>
+            <p onclick="goTo('home')" style="text-align: center; margin-top: 15px; cursor: pointer;">Voltar</p>
+        </div>
+    </div>
+
+    <script>
+        // ESTADO DA APLICAÇÃO (Persistente no LocalStorage)
+        let appState = JSON.parse(localStorage.getItem('diario21_data')) || {
+            userName: '',
+            startWeight: 0,
+            startDate: null,
+            logs: {} // Armazena registros por dia: { "1": { weight: 70, water: 8 ... } }
+        };
+
+        function saveState() {
+            localStorage.setItem('diario21_data', JSON.stringify(appState));
+        }
+
+        function goTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenId).classList.add('active');
+            if(screenId === 'home') renderHome();
+        }
+
+        function saveSetup() {
+            const name = document.getElementById('user-name').value;
+            const weight = document.getElementById('start-weight').value;
+            if(!name || !weight) return alert("Preencha os dados básicos.");
+            
+            appState.userName = name;
+            appState.startWeight = parseFloat(weight);
+            appState.startDate = new Date().toISOString();
+            saveState();
+            goTo('home');
+        }
+
+        function renderHome() {
+            document.getElementById('welcome-text').innerText = `Olá, ${appState.userName}!`;
+            
+            // Cálculo de dias
+            const start = new Date(appState.startDate);
+            const today = new Date();
+            const diffTime = Math.abs(today - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) || 1;
+            
+            document.getElementById('current-day-num').innerText = diffDays;
+            
+            const progress = (Object.keys(appState.logs).length / 21) * 100;
+            document.getElementById('main-progress').style.width = `${progress}%`;
+
+            // Grid de 21 dias
+            const grid = document.getElementById('main-habit-grid');
+            grid.innerHTML = '';
+            for(let i = 1; i <= 21; i++) {
+                const div = document.createElement('div');
+                div.className = `habit-dot ${appState.logs[i] ? 'done' : ''}`;
+                div.innerText = i;
+                grid.appendChild(div);
+            }
+        }
+
+        function saveDailyLog() {
+            const start = new Date(appState.startDate);
+            const today = new Date();
+            const diffDays = Math.ceil((today - start) / (1000 * 60 * 60 * 24)) || 1;
+
+            const log = {
+                weight: document.getElementById('log-weight').value,
+                food: document.getElementById('log-food').value,
+                fasting: document.getElementById('log-fasting').value,
+                water: document.getElementById('log-water').value,
+                status: document.getElementById('log-status').value,
+                date: new Date().toLocaleDateString()
+            };
+
+            appState.logs[diffDays] = log;
+            saveState();
+            alert("Dia registrado com sucesso!");
+            goTo('home');
+        }
+
+        // Verificação inicial
+        window.onload = () => {
+            if(appState.startDate) {
+                goTo('home');
+            }
+        };
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
