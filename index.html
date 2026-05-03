@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #818CF8; /* Soft Indigo */
-            --secondary: #F472B6; /* Rose Gold/Pink */
+            --primary: #818CF8;
+            --secondary: #F472B6;
             --bg: #F8FAFC;
             --glass: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.4);
@@ -24,7 +24,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: background 0.4s ease; padding-bottom: 120px; }
 
-        /* UI Base */
         .screen { display: none; padding: 25px 20px; animation: fade 0.4s ease; }
         .screen.active { display: block; }
         @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -48,7 +47,6 @@
         .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 20px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(129, 140, 248, 0.3); transition: 0.2s; }
         .btn:active { transform: scale(0.98); }
 
-        /* Emojis Selector */
         .emoji-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .emoji-btn { font-size: 24px; background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.05); padding: 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
         .emoji-btn.selected { background: var(--primary); transform: scale(1.1); border-color: var(--primary); }
@@ -60,11 +58,9 @@
         .tab-icon { font-size: 22px; margin-bottom: 4px; }
         .tab-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Respirador SOS */
         .breathe-circle { width: 150px; height: 150px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; margin: 50px auto; opacity: 0.8; transition: all 4s ease-in-out; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 20px; box-shadow: 0 0 50px rgba(129, 140, 248, 0.4); }
         .breathe-circle.inhale { transform: scale(1.6); }
         
-        /* Badges */
         .badge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
         .badge { background: rgba(0,0,0,0.03); padding: 15px 5px; border-radius: 16px; opacity: 0.4; filter: grayscale(1); transition: 0.3s; }
         .badge.unlocked { opacity: 1; filter: grayscale(0); background: rgba(244, 114, 182, 0.1); }
@@ -72,6 +68,12 @@
         .badge-title { font-size: 10px; font-weight: 700; color: var(--text); }
 
         .streak-pill { background: rgba(244, 114, 182, 0.15); color: var(--secondary); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px; }
+
+        .result-box { display: none; margin-top: 20px; background: var(--bg); border: 1px solid rgba(129, 140, 248, 0.3); padding: 20px; border-radius: 20px; }
+        .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 14px; }
+        .result-item:last-child { border-bottom: none; }
+        .result-item strong { color: var(--primary); font-weight: 800; }
+        .timeline-box { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 15px; border-radius: 16px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -101,27 +103,31 @@
 
     <div id="view-hub" class="screen">
         <h1>Bio-Hub.</h1>
-        <p style="margin-bottom: 20px; opacity: 0.7; font-size: 14px;">Métricas exatas para o corpo feminino.</p>
+        <p style="margin-bottom: 20px; opacity: 0.7; font-size: 14px;">Planejamento preciso para o seu objetivo.</p>
 
         <div class="glass-card">
-            <h2>Calculadora de Perfil</h2>
+            <h2>Calculadora de Metas</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><label>Peso (kg)</label><input type="number" id="calc-w" placeholder="65.0"></div>
-                <div><label>Idade</label><input type="number" id="calc-a" placeholder="28"></div>
-                <div><label>Altura (cm)</label><input type="number" id="calc-h" placeholder="165"></div>
-                <div><label>Cintura (cm)</label><input type="number" id="calc-c" placeholder="70"></div>
+                <div><label>Peso Atual (kg)</label><input type="number" id="calc-w" placeholder="Ex: 75.0"></div>
+                <div><label>Peso Alvo (kg)</label><input type="number" id="calc-gw" placeholder="Ex: 62.0"></div>
+                <div><label>Idade</label><input type="number" id="calc-a" placeholder="Ex: 30"></div>
+                <div><label>Altura (cm)</label><input type="number" id="calc-h" placeholder="Ex: 165"></div>
             </div>
-            <label>Pescoço (cm) - Opcional para % Gordura</label>
-            <input type="number" id="calc-n" placeholder="32">
+            <label>Cintura (cm) - Opcional</label>
+            <input type="number" id="calc-c" placeholder="Ex: 75">
             
-            <button class="btn" onclick="runHubCalcs()">Gerar Diagnóstico</button>
+            <button class="btn" onclick="runHubCalcs()">Mapear Minha Rota</button>
 
-            <div id="hub-results" style="display: none; margin-top: 20px; background: rgba(129, 140, 248, 0.1); padding: 15px; border-radius: 16px;">
-                <p><strong>IMC:</strong> <span id="res-imc">--</span></p>
-                <p><strong>% Gordura Corporal:</strong> <span id="res-bf">--</span></p>
-                <p><strong>TMB (Calorias Base):</strong> <span id="res-tmb">--</span> kcal</p>
-                <p><strong>Meta de Água:</strong> <span id="res-water">--</span> ml</p>
-                <p><strong>Proteína (Manutenção):</strong> <span id="res-prot">--</span> g</p>
+            <div class="result-box" id="hub-results">
+                <div class="result-item"><span>Seu IMC Atual</span><strong id="res-imc">--</strong></div>
+                <div class="result-item"><span>Distância do Alvo</span><strong id="res-gap">--</strong></div>
+                <div class="result-item"><span>Calorias Diárias (Déficit)</span><strong id="res-cal">-- kcal</strong></div>
+                <div class="result-item"><span>Proteína Recomendada</span><strong id="res-prot">-- g</strong></div>
+                <div class="result-item"><span>Meta de Água Pessoal</span><strong id="res-water">-- ml</strong></div>
+                
+                <div class="timeline-box" id="res-timeline">
+                    Sua projeção de tempo aparecerá aqui.
+                </div>
             </div>
         </div>
     </div>
@@ -208,9 +214,8 @@
     </div>
 
     <script>
-        // ESTADO GLOBAL
         let db = JSON.parse(localStorage.getItem('clara_mente_db')) || {
-            user: { name: 'Clara', streak: 0, lastDate: null, theme: 'light' },
+            user: { streak: 0, lastDate: null, theme: 'light' },
             fasting: { isFasting: false, startTime: null },
             logs: {},
             badges: { start: true, water: false, fire: false, fast: false, mind: false, moon: false }
@@ -221,7 +226,6 @@
 
         function save() { localStorage.setItem('clara_mente_db', JSON.stringify(db)); }
 
-        // NAVEGAÇÃO
         function nav(view) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -232,25 +236,20 @@
             if(view === 'profile') renderBadges();
         }
 
-        // MOTOR DE JEJUM
         function toggleFasting() {
             if(db.fasting.isFasting) {
-                // Finaliza Jejum
-                const end = new Date().getTime();
-                const diffHours = (end - db.fasting.startTime) / (1000 * 60 * 60);
+                const diffHours = (new Date().getTime() - db.fasting.startTime) / (1000 * 60 * 60);
                 if(diffHours >= 16) { db.badges.fast = true; save(); }
                 db.fasting.isFasting = false;
                 db.fasting.startTime = null;
                 document.getElementById('btn-fast').innerText = "Iniciar Jejum Agora";
                 document.getElementById('fasting-ring').style.background = `conic-gradient(var(--primary) 0%, transparent 0)`;
             } else {
-                // Inicia
                 db.fasting.isFasting = true;
                 db.fasting.startTime = new Date().getTime();
                 document.getElementById('btn-fast').innerText = "Quebrar Jejum (Comer)";
             }
-            save();
-            initHome();
+            save(); initHome();
         }
 
         function initHome() {
@@ -260,9 +259,7 @@
             if(db.fasting.isFasting && db.fasting.startTime) {
                 document.getElementById('btn-fast').innerText = "Quebrar Jejum (Comer)";
                 timerInterval = setInterval(() => {
-                    const now = new Date().getTime();
-                    const diffMs = now - db.fasting.startTime;
-                    
+                    const diffMs = new Date().getTime() - db.fasting.startTime;
                     const hrs = Math.floor(diffMs / (1000 * 60 * 60));
                     const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
                     const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
@@ -270,9 +267,8 @@
                     document.getElementById('fasting-time').innerText = 
                         `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
                     
-                    // Fases Metabólicas
                     let phase = "Glicogênio Ativo";
-                    let perc = Math.min((hrs / 16) * 100, 100); // 16h meta visual base
+                    let perc = Math.min((hrs / 16) * 100, 100); 
                     
                     if(hrs >= 16) phase = "Autofagia ♻️";
                     else if(hrs >= 14) phase = "Queima de Gordura 🔥";
@@ -289,36 +285,49 @@
             }
         }
 
-        // BIO-HUB CALCULADORAS
+        // --- NOVA LÓGICA DA CALCULADORA INTELIGENTE ---
         function runHubCalcs() {
             const w = parseFloat(document.getElementById('calc-w').value);
+            const gw = parseFloat(document.getElementById('calc-gw').value);
             const a = parseFloat(document.getElementById('calc-a').value);
             const h = parseFloat(document.getElementById('calc-h').value);
-            const c = parseFloat(document.getElementById('calc-c').value);
-            const n = parseFloat(document.getElementById('calc-n').value);
 
-            if(!w || !h || !a) return alert("Preencha Peso, Idade e Altura.");
+            if(!w || !gw || !h || !a) return alert("Preencha Peso Atual, Peso Alvo, Idade e Altura.");
 
             const imc = (w / ((h/100)*(h/100))).toFixed(1);
-            const tmb = Math.round(655 + (9.6 * w) + (1.8 * h) - (4.7 * a));
+            const tmb = 655 + (9.6 * w) + (1.8 * h) - (4.7 * a);
             const water = Math.round(w * 35);
             
-            // Body Fat - Navy Method Fêmea
-            let bf = "Faltam Medidas";
-            if(c && n && h) {
-                const bfCalc = 163.205 * Math.log10(c + c) - 97.684 * Math.log10(h) - 78.387; // Simplificada visual
-                bf = Math.round(Math.abs(bfCalc)) + "%";
+            let gap = w - gw;
+            let timeMsg = "";
+            let calDaily = 0;
+            let prot = Math.round(gw * 2.0); // Proteína baseada no peso alvo
+
+            if(gap > 0) { // Quer emagrecer
+                calDaily = Math.round(tmb * 1.2 - 500); // TMB * atividade leve - deficit seguro
+                const semanas = Math.round(gap / 0.5); // Perda segura de 0.5kg por semana
+                timeMsg = `⏳ Faltam ${gap.toFixed(1)}kg. Focando no plano, você atinge a meta em aproximadamente ${semanas} semanas.`;
+                document.getElementById('res-gap').innerText = `Perder ${gap.toFixed(1)} kg`;
+            } else if (gap < 0) { // Quer ganhar
+                gap = Math.abs(gap);
+                calDaily = Math.round(tmb * 1.2 + 300); // Superávit
+                const semanas = Math.round(gap / 0.3); // Ganho limpo
+                timeMsg = `💪 Faltam ${gap.toFixed(1)}kg. Focando no treino, o ganho de massa ideal leva cerca de ${semanas} semanas.`;
+                document.getElementById('res-gap').innerText = `Ganhar ${gap.toFixed(1)} kg`;
+            } else {
+                calDaily = Math.round(tmb * 1.2);
+                timeMsg = "✨ Você já está no seu peso alvo! O foco agora é manutenção e tonificação.";
+                document.getElementById('res-gap').innerText = `Manutenção`;
             }
 
             document.getElementById('hub-results').style.display = 'block';
             document.getElementById('res-imc').innerText = imc;
-            document.getElementById('res-tmb').innerText = tmb;
-            document.getElementById('res-water').innerText = water;
-            document.getElementById('res-bf').innerText = bf;
-            document.getElementById('res-prot').innerText = Math.round(w * 1.6);
+            document.getElementById('res-cal').innerText = calDaily + " kcal";
+            document.getElementById('res-water').innerText = water + " ml";
+            document.getElementById('res-prot').innerText = prot + " g";
+            document.getElementById('res-timeline').innerText = timeMsg;
         }
 
-        // REGISTRO E GAMIFICAÇÃO
         function selEmoji(type, el, val) {
             document.querySelectorAll(`#${type}-grid .emoji-btn`).forEach(b => b.classList.remove('selected'));
             el.classList.add('selected');
@@ -343,43 +352,23 @@
             if(tempLog.sleep === '😴') db.badges.moon = true;
             if(tempLog.stress === 'Zen') db.badges.mind = true;
 
-            db.logs[hoje] = {
-                weight: w,
-                cycle: document.getElementById('log-cycle').value,
-                sleep: tempLog.sleep,
-                stress: tempLog.stress
-            };
-            db.user.lastDate = hoje;
-            save();
-            alert("Dia registrado no seu diário! ✨");
-            nav('home');
+            db.logs[hoje] = { weight: w, cycle: document.getElementById('log-cycle').value, sleep: tempLog.sleep, stress: tempLog.stress };
+            db.user.lastDate = hoje; save();
+            alert("Dia registrado no seu diário! ✨"); nav('home');
         }
 
-        // RESPIRAÇÃO SOS
         function startBreathing() {
             const circle = document.getElementById('b-circle');
             let cycle = 0;
-            circle.innerText = "Inspire...";
-            circle.classList.add('inhale');
-
+            circle.innerText = "Inspire..."; circle.classList.add('inhale');
             const interval = setInterval(() => {
                 cycle++;
-                if(cycle % 2 !== 0) {
-                    circle.innerText = "Expire...";
-                    circle.classList.remove('inhale');
-                } else {
-                    circle.innerText = "Inspire...";
-                    circle.classList.add('inhale');
-                }
-                if(cycle >= 6) { // 3 minutos aprox
-                    clearInterval(interval);
-                    circle.innerText = "Pronta.";
-                    circle.classList.remove('inhale');
-                }
+                if(cycle % 2 !== 0) { circle.innerText = "Expire..."; circle.classList.remove('inhale'); } 
+                else { circle.innerText = "Inspire..."; circle.classList.add('inhale'); }
+                if(cycle >= 6) { clearInterval(interval); circle.innerText = "Pronta."; circle.classList.remove('inhale'); }
             }, 4000);
         }
 
-        // PERFIL & UTILITÁRIOS
         function renderBadges() {
             Object.keys(db.badges).forEach(k => {
                 if(db.badges[k]) document.getElementById('bdg-' + k)?.classList.add('unlocked');
@@ -388,24 +377,19 @@
 
         function exportStory() {
             const text = `✨ Minha Jornada ClaraMente ✨\n\n🔥 Ofensiva: ${db.user.streak} dias de foco\n💧 Evoluindo corpo e mente.\n\n#ClaraMente #BiohackingFeminino`;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Texto copiado! Agora é só colar no seu Story do Instagram junto com uma foto sua. 📸");
-            });
+            navigator.clipboard.writeText(text).then(() => alert("Texto copiado! Agora é só colar no seu Story. 📸"));
         }
 
         function toggleTheme() {
             const t = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', t);
-            db.user.theme = t;
-            save();
+            db.user.theme = t; save();
         }
 
-        // INICIALIZAÇÃO
         window.onload = () => {
             document.body.setAttribute('data-theme', db.user.theme);
             document.getElementById('theme-sw').checked = db.user.theme === 'dark';
             
-            // Frase diária aleatória
             const tips = [
                 "A hidratação correta é a chave. Muitas vezes a fome é apenas o corpo pedindo água.",
                 "O estresse alto eleva o cortisol e trava o emagrecimento. Respire fundo.",
@@ -413,7 +397,6 @@
                 "O jejum não é sobre passar fome, é sobre dar descanso aos seus órgãos."
             ];
             document.getElementById('daily-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
-            
             initHome();
         };
     </script>
