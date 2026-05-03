@@ -12,7 +12,9 @@
             --accent: #F43F5E;
             --bg: #F8FAFC;
             --glass: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(255, 255, 255, 0.5);
+            --text: #1E293B;
+            --text-light: #64748B;
+            --white: #FFFFFF;
         }
 
         [data-theme="dark"] {
@@ -20,234 +22,254 @@
             --glass: rgba(30, 41, 59, 0.8);
             --text: #F8FAFC;
             --text-light: #94A3B8;
+            --white: #1E293B;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); transition: background 0.5s ease; }
+        body { background: var(--bg); color: var(--text); transition: background 0.5s ease; min-height: 100vh; }
 
-        /* UI Elements */
-        .screen { display: none; padding: 20px 20px 100px; max-width: 480px; margin: 0 auto; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .screen { display: none; padding: 20px 20px 110px; max-width: 480px; margin: 0 auto; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .screen.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .glass { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.5); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        /* Streaks & Badges */
-        .streak-fire { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--accent); font-size: 18px; }
-        
+        /* Typography */
+        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 15px; }
+        h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        p { font-size: 14px; opacity: 0.8; }
+
+        /* Stats & Streaks */
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .streak-tag { background: rgba(244, 63, 94, 0.1); color: var(--accent); padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+
         /* Buttons */
-        .btn-prime { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
-        
-        /* Nav Bar */
-        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 25px; display: flex; justify-content: space-around; padding: 15px; border: 1px solid var(--card-border); z-index: 1000; }
-        .nav-item { font-size: 20px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
-        .nav-item.active { opacity: 1; transform: scale(1.2); }
+        .btn-main { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 20px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); font-size: 16px; }
+
+        /* Tab Bar Navigation */
+        .tab-bar { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border-radius: 25px; display: flex; justify-content: space-around; padding: 12px; border: 1px solid rgba(255,255,255,0.3); z-index: 1000; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .tab-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; opacity: 0.4; flex: 1; }
+        .tab-item.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
+        .tab-icon { font-size: 20px; margin-bottom: 4px; }
+        .tab-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Forms */
-        input, select { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); margin: 10px 0; font-size: 16px; }
-        .error-msg { color: var(--accent); font-size: 12px; display: none; margin-top: -5px; margin-bottom: 10px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 15px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); background: var(--white); font-size: 16px; color: var(--text); }
+        .error { color: var(--accent); font-size: 12px; font-weight: 600; display: none; margin-top: 5px; }
 
-        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+        /* Calculator Results */
+        .res-card { background: var(--primary); color: white; padding: 20px; border-radius: 20px; margin-top: 15px; display: none; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .res-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; text-align: center; }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
     <div id="scr-home" class="screen active">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <div class="streak-fire">🔥 <span id="streak-count">0</span> DIAS</div>
-            <div onclick="go('settings')" style="cursor: pointer;">⚙️</div>
+        <div class="header-row">
+            <div class="streak-tag">🔥 <span id="streak-val">0</span> DIAS</div>
+            <div onclick="go('settings')">⚙️</div>
         </div>
-        
         <div class="glass">
-            <h1 id="user-greeting">Olá! ✨</h1>
-            <p style="opacity: 0.7; font-size: 14px;">Pronta para evoluir hoje?</p>
-            <div style="margin-top: 20px; height: 10px; background: #E2E8F0; border-radius: 10px; overflow: hidden;">
-                <div id="main-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #6366F1, #A855F7); transition: 1s;"></div>
+            <h1 id="greet">Olá! ✨</h1>
+            <p id="sub-greet">Você está no dia 1 da sua jornada.</p>
+            <div style="height: 8px; background: #E2E8F0; border-radius: 10px; margin: 20px 0; overflow: hidden;">
+                <div id="p-bar" style="width: 5%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); transition: 1.5s;"></div>
             </div>
-            <p id="progress-desc" style="font-size: 11px; margin-top: 8px; font-weight: 600;"></p>
+            <button class="btn-main" onclick="go('log')">Registrar Progresso</button>
         </div>
-
-        <button class="btn-prime" onclick="go('log')">Registrar Dia</button>
     </div>
 
     <div id="scr-calc" class="screen">
         <h1>Calculadoras</h1>
-        <p style="margin-bottom: 20px; opacity: 0.7;">Ciência aplicada ao seu corpo.</p>
+        <p style="margin-bottom: 20px;">Ferramentas de Biohacking personalizadas.</p>
         
         <div class="glass">
-            <h3>Bio-Métricas</h3>
-            <label style="font-size: 12px;">Idade</label>
-            <input type="number" id="calc-age" placeholder="Ex: 28">
-            <label style="font-size: 12px;">Altura (cm)</label>
-            <input type="number" id="calc-height" placeholder="Ex: 165">
-            <label style="font-size: 12px;">Objetivo</label>
-            <select id="calc-goal">
-                <option value="lose">Emagrecer</option>
-                <option value="maintain">Manter Peso</option>
-                <option value="gain">Ganhar Músculo</option>
-            </select>
-            <button class="btn-prime" onclick="calculateMetabolism()" style="padding: 12px; margin-top: 10px;">Calcular Agora</button>
-        </div>
+            <h2>Metabolismo e Macros</h2>
+            <div class="input-group">
+                <label>Peso Atual (kg)</label>
+                <input type="number" id="c-weight" placeholder="Ex: 65.0" step="0.1">
+            </div>
+            <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                    <label>Idade</label>
+                    <input type="number" id="c-age" placeholder="Ex: 28">
+                </div>
+                <div>
+                    <label>Altura (cm)</label>
+                    <input type="number" id="c-height" placeholder="Ex: 165">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Objetivo</label>
+                <select id="c-goal">
+                    <option value="1">Emagrecer (Déficit)</option>
+                    <option value="2">Manter Peso</option>
+                    <option value="3">Ganho de Massa</option>
+                </select>
+            </div>
+            <button class="btn-main" onclick="runCalculators()">Calcular Plano</button>
 
-        <div id="calc-results" class="glass" style="display: none; background: linear-gradient(135deg, #6366F1, #A855F7); color: white;">
-            <h4 style="margin-bottom: 15px;">Seu Plano Sugerido:</h4>
-            <div id="results-content" style="font-size: 14px; line-height: 2;"></div>
+            <div id="c-results" class="res-card">
+                <h3>Seu Perfil Bio:</h3>
+                <div class="res-grid">
+                    <div class="res-item"><small>ÁGUA</small><br><strong id="r-water">--</strong></div>
+                    <div class="res-item"><small>PROTEÍNA</small><br><strong id="r-prot">--</strong></div>
+                    <div class="res-item"><small>CALORIAS</small><br><strong id="r-cal">--</strong></div>
+                    <div class="res-item"><small>CARBOS</small><br><strong id="r-carb">--</strong></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="scr-log" class="screen">
         <div class="glass">
-            <h2>Registro Diário</h2>
-            <label>Peso Atual (kg)</label>
-            <input type="number" id="log-weight" step="0.1">
-
-            <label>Horário Início Jejum (HH:MM)</label>
-            <input type="text" id="fasting-start" placeholder="00:00" maxlength="5">
-            <div id="err-fasting" class="error-msg">Horário inválido.</div>
-
-            <label>Horário Término Jejum (HH:MM)</label>
-            <input type="text" id="fasting-end" placeholder="00:00" maxlength="5">
-
-            <label>Água (Copos de 250ml)</label>
-            <input type="number" id="log-water">
-
-            <button class="btn-prime" onclick="saveEntry()" style="margin-top: 20px;">Finalizar e Brilhar</button>
+            <h2>Hoje</h2>
+            <div class="input-group">
+                <label>Peso do dia (kg)</label>
+                <input type="number" id="l-weight" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Início Jejum (HH:MM)</label>
+                <input type="text" id="l-f-start" placeholder="00:00" maxlength="5">
+                <div id="err-time" class="error">Horário inexistente (Ex: 00:00 a 23:59)</div>
+            </div>
+            <div class="input-group">
+                <label>Água (Copos 250ml)</label>
+                <input type="number" id="l-water">
+            </div>
+            <button class="btn-main" onclick="confirmLog()">Finalizar Dia</button>
         </div>
     </div>
 
     <div id="scr-settings" class="screen">
-        <h1>Ajustes</h1>
+        <h1>Configurações</h1>
         <div class="glass">
-            <h3>Customização</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
                 <span>Modo Escuro</span>
-                <input type="checkbox" id="dark-mode-toggle" style="width: auto;" onchange="toggleTheme()">
+                <input type="checkbox" id="theme-sw" style="width:auto" onchange="swapTheme()">
             </div>
-            
-            <hr style="opacity: 0.1; margin: 20px 0;">
-            
-            <h3>Notificações</h3>
-            <label>Horário do Lembrete</label>
-            <input type="time" id="notif-time" value="20:00">
-            <button class="btn-prime" style="padding: 10px;" onclick="saveSettings()">Salvar Ajustes</button>
+            <hr style="margin:20px 0; opacity:0.1;">
+            <label>Notificação Diária</label>
+            <input type="time" id="notif-t">
+            <button class="btn-main" style="margin-top:20px" onclick="saveSets()">Salvar</button>
         </div>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-item active" onclick="go('home')">🏠</div>
-        <div class="nav-item" onclick="go('calc')">📊</div>
-        <div class="nav-item" onclick="go('settings')">⚙️</div>
+    <div class="tab-bar">
+        <div class="tab-item active" onclick="go('home')" id="nav-home">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">Home</span>
+        </div>
+        <div class="tab-item" onclick="go('calc')" id="nav-calc">
+            <span class="tab-icon">📊</span>
+            <span class="tab-label">Calcs</span>
+        </div>
+        <div class="tab-item" onclick="go('log')" id="nav-log">
+            <span class="tab-icon">✏️</span>
+            <span class="tab-label">Registro</span>
+        </div>
+        <div class="tab-item" onclick="go('settings')" id="nav-settings">
+            <span class="tab-icon">⚙️</span>
+            <span class="tab-label">Ajustes</span>
+        </div>
     </div>
 
     <script>
-        // --- LOGICA DE ESTADO ---
-        let db = JSON.parse(localStorage.getItem('evolucao_v3')) || {
-            user: { name: 'Allan', streak: 0, lastEntry: null, theme: 'light' },
+        let db = JSON.parse(localStorage.getItem('evol_pro_db')) || {
+            profile: { name: 'Usuária', streak: 0, last: null, theme: 'light' },
             logs: {},
-            settings: { notifTime: '20:00' }
+            settings: { notif: '20:00' }
         };
 
-        function save() { localStorage.setItem('evolucao_v3', JSON.stringify(db)); }
+        function save() { localStorage.setItem('evol_pro_db', JSON.stringify(db)); }
 
-        // --- NAVEGAÇÃO ---
-        function go(scr) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('scr-' + scr).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach((item, idx) => {
-                item.classList.toggle('active', ['home', 'calc', 'settings'].includes(scr) && idx === ['home', 'calc', 'settings'].indexOf(scr));
-            });
-            if(scr === 'home') refreshDashboard();
+        function go(s) {
+            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(ti => ti.classList.remove('active'));
+            document.getElementById('scr-' + s).classList.add('active');
+            const nav = document.getElementById('nav-' + s);
+            if(nav) nav.classList.add('active');
+            if(s === 'home') syncHome();
         }
 
-        // --- MÁSCARA DE HORÁRIO ---
-        function setupTimeMask(id) {
-            const el = document.getElementById(id);
-            el.addEventListener('input', (e) => {
-                let v = e.target.value.replace(/\D/g, '');
-                if (v.length >= 3) v = v.substring(0, 2) + ':' + v.substring(2, 4);
-                e.target.value = v;
-            });
+        // Máscara e Validação de Tempo
+        const timeInput = document.getElementById('l-f-start');
+        timeInput.addEventListener('input', (e) => {
+            let v = e.target.value.replace(/\D/g, '');
+            if(v.length >= 3) v = v.substring(0,2) + ':' + v.substring(2,4);
+            e.target.value = v;
+        });
+        timeInput.addEventListener('blur', (e) => {
+            const [h, m] = e.target.value.split(':').map(Number);
+            const isValid = h >= 0 && h < 24 && m >= 0 && m < 60;
+            document.getElementById('err-time').style.display = (e.target.value && !isValid) ? 'block' : 'none';
+        });
 
-            el.addEventListener('blur', (e) => {
-                const parts = e.target.value.split(':');
-                const h = parseInt(parts[0]);
-                const m = parseInt(parts[1]);
-                const isValid = h >= 0 && h < 24 && m >= 0 && m < 60;
-                document.getElementById('err-fasting').style.display = (e.target.value && !isValid) ? 'block' : 'none';
-            });
+        // Calculadoras Avançadas
+        function runCalculators() {
+            const w = parseFloat(document.getElementById('c-weight').value);
+            const a = parseInt(document.getElementById('c-age').value);
+            const h = parseInt(document.getElementById('c-height').value);
+            const g = document.getElementById('c-goal').value;
+
+            if(!w || !a || !h) return alert("Preencha todos os dados corporais!");
+
+            // TMB Harris-Benedict (Feminino)
+            let tmb = 655 + (9.6 * w) + (1.8 * h) - (4.7 * a);
+            let water = Math.round(w * 35);
+            let calories, prot;
+
+            if(g === "1") { calories = tmb * 1.1; prot = w * 2.1; } // Emagrecer
+            else if(g === "3") { calories = tmb * 1.5; prot = w * 2.2; } // Ganho
+            else { calories = tmb * 1.3; prot = w * 1.6; } // Manter
+
+            document.getElementById('c-results').style.display = 'block';
+            document.getElementById('r-water').innerText = water + 'ml';
+            document.getElementById('r-prot').innerText = Math.round(prot) + 'g';
+            document.getElementById('r-cal').innerText = Math.round(calories) + 'kcal';
+            document.getElementById('r-carb').innerText = Math.round((calories * 0.4) / 4) + 'g';
         }
-        setupTimeMask('fasting-start');
-        setupTimeMask('fasting-end');
 
-        // --- DASHBOARD & STREAK ---
-        function refreshDashboard() {
-            document.getElementById('streak-count').innerText = db.user.streak;
-            const logCount = Object.keys(db.logs).length;
-            const progress = (logCount / 21) * 100;
-            document.getElementById('main-progress').style.width = Math.min(progress, 100) + '%';
-            document.getElementById('progress-desc').innerText = logCount >= 21 ? 
-                `Jornada Infinita: Dia ${logCount}` : `Faltam ${21 - logCount} dias para concluir o ciclo.`;
+        function syncHome() {
+            document.getElementById('streak-val').innerText = db.profile.streak;
+            const count = Object.keys(db.logs).length;
+            document.getElementById('p-bar').style.width = Math.min((count/21)*100, 100) + '%';
+            document.getElementById('sub-greet').innerText = `Você completou ${count} registros. Mantenha sua ofensiva!`;
         }
 
-        // --- CALCULADORA AVANÇADA ---
-        function calculateMetabolism() {
-            const age = parseInt(document.getElementById('calc-age').value);
-            const height = parseInt(document.getElementById('calc-height').value);
-            const weight = parseFloat(db.logs[Object.keys(db.logs).pop()]?.weight || 70); // Usa o último peso ou 70
-            const goal = document.getElementById('calc-goal').value;
-
-            if(!age || !height) return alert("Preencha idade e altura para calcular.");
-
-            // Harris-Benedict para Mulheres (Assumindo público ClaraMente)
-            let tmb = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
-            let water = Math.round(weight * 35);
+        function confirmLog() {
+            const weight = document.getElementById('l-weight').value;
+            if(!weight) return alert("Insira o peso de hoje.");
             
-            let protein, calories;
-            if(goal === 'lose') { calories = tmb * 1.1; protein = weight * 2; }
-            else if(goal === 'gain') { calories = tmb * 1.5; protein = weight * 2.2; }
-            else { calories = tmb * 1.3; protein = weight * 1.5; }
-
-            document.getElementById('calc-results').style.display = 'block';
-            document.getElementById('results-content').innerHTML = `
-                💧 Água: ${water}ml/dia<br>
-                🔥 Calorias Base: ${Math.round(calories)} kcal<br>
-                🥩 Proteína: ${Math.round(protein)}g/dia<br>
-                🍞 Carbos: ${Math.round((calories * 0.4) / 4)}g/dia
-            `;
-        }
-
-        // --- SALVAR REGISTRO COM OFENSIVA ---
-        function saveEntry() {
             const hoje = new Date().toLocaleDateString();
-            if(db.logs[hoje]) return alert("Você já brilhou hoje!");
+            if(db.logs[hoje]) return alert("Dia já registrado!");
 
-            const lastEntry = db.user.lastEntry;
+            // Lógica de Ofensiva (Duolingo Style)
             const ontem = new Date(); ontem.setDate(ontem.getDate() - 1);
-            
-            if(lastEntry === ontem.toLocaleDateString()) db.user.streak++;
-            else if(lastEntry !== hoje) db.user.streak = 1;
+            if(db.profile.last === ontem.toLocaleDateString()) db.profile.streak++;
+            else if(db.profile.last !== hoje) db.profile.streak = 1;
 
-            db.logs[hoje] = {
-                weight: document.getElementById('log-weight').value,
-                water: document.getElementById('log-water').value,
-                timestamp: new Date().getTime()
-            };
-            db.user.lastEntry = hoje;
+            db.logs[hoje] = { weight };
+            db.profile.last = hoje;
             save();
-            alert("Evolução salva! 🔥");
+            alert("Progresso salvo! 🔥");
             go('home');
         }
 
-        function toggleTheme() {
-            const theme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', theme);
-            db.user.theme = theme;
+        function swapTheme() {
+            const t = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', t);
+            db.profile.theme = t;
             save();
         }
 
         window.onload = () => {
-            document.body.setAttribute('data-theme', db.user.theme);
-            refreshDashboard();
+            document.body.setAttribute('data-theme', db.profile.theme || 'light');
+            document.getElementById('theme-sw').checked = db.profile.theme === 'dark';
+            syncHome();
         };
     </script>
 </body>
