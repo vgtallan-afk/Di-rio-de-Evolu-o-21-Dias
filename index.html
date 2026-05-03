@@ -3,233 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>Diário de Evolução</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Evolução Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --primary: #6366F1;
+            --secondary: #A855F7;
+            --accent: #F43F5E;
             --bg: #F8FAFC;
-            --glass: rgba(255, 255, 255, 0.9);
-            --accent: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
-            --text: #1E293B;
-            --text-light: #64748B;
+            --glass: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(255, 255, 255, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0F172A;
+            --glass: rgba(30, 41, 59, 0.8);
+            --text: #F8FAFC;
+            --text-light: #94A3B8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+        body { background: var(--bg); color: var(--text); transition: background 0.5s ease; }
 
-        .screen { display: none; padding: 20px; max-width: 450px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+        /* UI Elements */
+        .screen { display: none; padding: 20px 20px 100px; max-width: 480px; margin: 0 auto; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.6);
-            border-radius: 28px;
-            padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
-        }
+        .glass { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 30px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        h1, h2 { font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--text-light); margin-top: 15px; margin-bottom: 5px; }
+        /* Streaks & Badges */
+        .streak-fire { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--accent); font-size: 18px; }
+        
+        /* Buttons */
+        .btn-prime { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3); }
+        
+        /* Nav Bar */
+        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--glass); backdrop-filter: blur(20px); border-radius: 25px; display: flex; justify-content: space-around; padding: 15px; border: 1px solid var(--card-border); z-index: 1000; }
+        .nav-item { font-size: 20px; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+        .nav-item.active { opacity: 1; transform: scale(1.2); }
 
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid #F1F5F9; }
-        .stat-val { display: block; font-size: 20px; font-weight: 700; color: #6366F1; }
+        /* Forms */
+        input, select { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); margin: 10px 0; font-size: 16px; }
+        .error-msg { color: var(--accent); font-size: 12px; display: none; margin-top: -5px; margin-bottom: 10px; }
 
-        .btn {
-            background: var(--accent); color: white; border: none; padding: 18px;
-            border-radius: 20px; font-weight: 600; width: 100%; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25); transition: 0.3s;
-        }
-        .btn-outline { background: white; color: var(--text-light); border: 1px solid #E2E8F0; box-shadow: none; margin-top: 10px; }
-
-        input, textarea, select {
-            width: 100%; padding: 14px; border-radius: 15px; border: 1px solid #E2E8F0;
-            background: white; font-size: 16px; transition: 0.3s;
-        }
-        input:focus { border-color: #6366F1; outline: none; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-
-        .day-badge { background: #EEF2FF; color: #6366F1; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-    <div id="screen-welcome" class="screen active">
-        <div style="height: 25vh"></div>
-        <div style="font-size: 40px; margin-bottom: 20px;">✨</div>
-        <h1>Sua Melhor Versão começa agora.</h1>
-        <p style="color: var(--text-light); margin-bottom: 40px;">Um guia delicado e tecnológico para sua evolução em 21 dias.</p>
-        <button class="btn" onclick="goTo('setup')">Iniciar Jornada</button>
+    <div id="scr-home" class="screen active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div class="streak-fire">🔥 <span id="streak-count">0</span> DIAS</div>
+            <div onclick="go('settings')" style="cursor: pointer;">⚙️</div>
+        </div>
+        
+        <div class="glass">
+            <h1 id="user-greeting">Olá! ✨</h1>
+            <p style="opacity: 0.7; font-size: 14px;">Pronta para evoluir hoje?</p>
+            <div style="margin-top: 20px; height: 10px; background: #E2E8F0; border-radius: 10px; overflow: hidden;">
+                <div id="main-progress" style="width: 0%; height: 100%; background: linear-gradient(90deg, #6366F1, #A855F7); transition: 1s;"></div>
+            </div>
+            <p id="progress-desc" style="font-size: 11px; margin-top: 8px; font-weight: 600;"></p>
+        </div>
+
+        <button class="btn-prime" onclick="go('log')">Registrar Dia</button>
     </div>
 
-    <div id="screen-setup" class="screen">
-        <div class="glass-card">
-            <h2>Configuração</h2>
-            <p style="font-size: 14px; color: var(--text-light)">Esses dados ficam salvos apenas no seu celular.</p>
-            
-            <label>Como quer ser chamada?</label>
-            <input type="text" id="user-name" placeholder="Seu nome">
-            
-            <label>Peso Inicial (kg)</label>
-            <input type="number" id="start-weight" step="0.1" placeholder="Ex: 65.5">
-            
-            <button class="btn" style="margin-top: 25px;" onclick="saveSetup()">Criar Meu Diário</button>
-        </div>
-    </div>
-
-    <div id="screen-home" class="screen">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2 id="welcome-msg">Olá!</h2>
-            <span class="day-badge" id="display-date">--</span>
-        </div>
-
-        <div class="stat-grid">
-            <div class="stat-card">
-                <span style="font-size: 11px; color: var(--text-light); text-transform: uppercase;">Jornada</span>
-                <span class="stat-val" id="current-day-num">1/21</span>
-            </div>
-            <div class="stat-card">
-                <span style="font-size: 11px; color: var(--text-light); text-transform: uppercase;">Peso Eliminado</span>
-                <span class="stat-val" id="weight-loss">0.0 kg</span>
-            </div>
-        </div>
-
-        <div class="glass-card" style="background: var(--accent); color: white;">
-            <p style="font-size: 14px; opacity: 0.9;">Evolução Geral</p>
-            <div style="height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 12px 0;">
-                <div id="progress-bar" style="height: 100%; background: white; width: 0%; border-radius: 10px; transition: 1.5s ease-in-out;"></div>
-            </div>
-            <p id="progress-text" style="font-size: 12px; font-weight: 600;">0% concluído</p>
-        </div>
-
-        <button class="btn" onclick="goTo('log')">Registrar Dia Hoje</button>
-    </div>
-
-    <div id="screen-log" class="screen">
-        <div class="glass-card">
-            <h2>Hoje</h2>
-            <p id="log-date-label" style="font-size: 14px; color: var(--text-light); margin-bottom: 10px;"></p>
-
-            <label>Peso Atual (kg)</label>
-            <input type="number" id="log-weight" step="0.1" placeholder="00.0">
-
-            <label>Horário do Jejum</label>
-            <input type="text" id="log-fasting" placeholder="Ex: 20h às 12h">
-
-            <label>O que você comeu hoje?</label>
-            <textarea id="log-food" rows="3" placeholder="Descreva brevemente..."></textarea>
-
-            <label>Copos de Água (Meta: 8)</label>
-            <input type="number" id="log-water" value="0">
-
-            <label>Seguiu o plano?</label>
-            <select id="log-status">
-                <option value="sim">Sim, segui! ✨</option>
-                <option value="nao">Não desta vez.</option>
+    <div id="scr-calc" class="screen">
+        <h1>Calculadoras</h1>
+        <p style="margin-bottom: 20px; opacity: 0.7;">Ciência aplicada ao seu corpo.</p>
+        
+        <div class="glass">
+            <h3>Bio-Métricas</h3>
+            <label style="font-size: 12px;">Idade</label>
+            <input type="number" id="calc-age" placeholder="Ex: 28">
+            <label style="font-size: 12px;">Altura (cm)</label>
+            <input type="number" id="calc-height" placeholder="Ex: 165">
+            <label style="font-size: 12px;">Objetivo</label>
+            <select id="calc-goal">
+                <option value="lose">Emagrecer</option>
+                <option value="maintain">Manter Peso</option>
+                <option value="gain">Ganhar Músculo</option>
             </select>
-
-            <button class="btn" style="margin-top: 25px;" onclick="saveDailyLog()">Salvar Registro</button>
-            <button class="btn btn-outline" onclick="goTo('home')">Cancelar</button>
+            <button class="btn-prime" onclick="calculateMetabolism()" style="padding: 12px; margin-top: 10px;">Calcular Agora</button>
         </div>
+
+        <div id="calc-results" class="glass" style="display: none; background: linear-gradient(135deg, #6366F1, #A855F7); color: white;">
+            <h4 style="margin-bottom: 15px;">Seu Plano Sugerido:</h4>
+            <div id="results-content" style="font-size: 14px; line-height: 2;"></div>
+        </div>
+    </div>
+
+    <div id="scr-log" class="screen">
+        <div class="glass">
+            <h2>Registro Diário</h2>
+            <label>Peso Atual (kg)</label>
+            <input type="number" id="log-weight" step="0.1">
+
+            <label>Horário Início Jejum (HH:MM)</label>
+            <input type="text" id="fasting-start" placeholder="00:00" maxlength="5">
+            <div id="err-fasting" class="error-msg">Horário inválido.</div>
+
+            <label>Horário Término Jejum (HH:MM)</label>
+            <input type="text" id="fasting-end" placeholder="00:00" maxlength="5">
+
+            <label>Água (Copos de 250ml)</label>
+            <input type="number" id="log-water">
+
+            <button class="btn-prime" onclick="saveEntry()" style="margin-top: 20px;">Finalizar e Brilhar</button>
+        </div>
+    </div>
+
+    <div id="scr-settings" class="screen">
+        <h1>Ajustes</h1>
+        <div class="glass">
+            <h3>Customização</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                <span>Modo Escuro</span>
+                <input type="checkbox" id="dark-mode-toggle" style="width: auto;" onchange="toggleTheme()">
+            </div>
+            
+            <hr style="opacity: 0.1; margin: 20px 0;">
+            
+            <h3>Notificações</h3>
+            <label>Horário do Lembrete</label>
+            <input type="time" id="notif-time" value="20:00">
+            <button class="btn-prime" style="padding: 10px;" onclick="saveSettings()">Salvar Ajustes</button>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="go('home')">🏠</div>
+        <div class="nav-item" onclick="go('calc')">📊</div>
+        <div class="nav-item" onclick="go('settings')">⚙️</div>
     </div>
 
     <script>
-        // SISTEMA DE ESTADO E PERSISTÊNCIA
-        let state = JSON.parse(localStorage.getItem('evolucao_21')) || {
-            userName: '', 
-            startWeight: 0, 
-            startDate: null, 
-            logs: {}
+        // --- LOGICA DE ESTADO ---
+        let db = JSON.parse(localStorage.getItem('evolucao_v3')) || {
+            user: { name: 'Allan', streak: 0, lastEntry: null, theme: 'light' },
+            logs: {},
+            settings: { notifTime: '20:00' }
         };
 
-        function saveState() {
-            localStorage.setItem('evolucao_21', JSON.stringify(state));
-        }
+        function save() { localStorage.setItem('evolucao_v3', JSON.stringify(db)); }
 
-        function goTo(screenId) {
+        // --- NAVEGAÇÃO ---
+        function go(scr) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + screenId).classList.add('active');
-            
-            if(screenId === 'home') updateDashboard();
-            if(screenId === 'log') {
-                const hoje = new Date();
-                document.getElementById('log-date-label').innerText = hoje.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            }
-            window.scrollTo(0,0);
+            document.getElementById('scr-' + scr).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach((item, idx) => {
+                item.classList.toggle('active', ['home', 'calc', 'settings'].includes(scr) && idx === ['home', 'calc', 'settings'].indexOf(scr));
+            });
+            if(scr === 'home') refreshDashboard();
         }
 
-        function saveSetup() {
-            const name = document.getElementById('user-name').value;
-            const weight = document.getElementById('start-weight').value;
-            
-            if(!name || !weight) return alert("Por favor, preencha seu nome e peso.");
+        // --- MÁSCARA DE HORÁRIO ---
+        function setupTimeMask(id) {
+            const el = document.getElementById(id);
+            el.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length >= 3) v = v.substring(0, 2) + ':' + v.substring(2, 4);
+                e.target.value = v;
+            });
 
-            state.userName = name;
-            state.startWeight = parseFloat(weight);
-            state.startDate = new Date().getTime(); 
-            saveState();
-            goTo('home');
+            el.addEventListener('blur', (e) => {
+                const parts = e.target.value.split(':');
+                const h = parseInt(parts[0]);
+                const m = parseInt(parts[1]);
+                const isValid = h >= 0 && h < 24 && m >= 0 && m < 60;
+                document.getElementById('err-fasting').style.display = (e.target.value && !isValid) ? 'block' : 'none';
+            });
+        }
+        setupTimeMask('fasting-start');
+        setupTimeMask('fasting-end');
+
+        // --- DASHBOARD & STREAK ---
+        function refreshDashboard() {
+            document.getElementById('streak-count').innerText = db.user.streak;
+            const logCount = Object.keys(db.logs).length;
+            const progress = (logCount / 21) * 100;
+            document.getElementById('main-progress').style.width = Math.min(progress, 100) + '%';
+            document.getElementById('progress-desc').innerText = logCount >= 21 ? 
+                `Jornada Infinita: Dia ${logCount}` : `Faltam ${21 - logCount} dias para concluir o ciclo.`;
         }
 
-        function updateDashboard() {
-            document.getElementById('welcome-msg').innerText = `Oi, ${state.userName}! ✨`;
+        // --- CALCULADORA AVANÇADA ---
+        function calculateMetabolism() {
+            const age = parseInt(document.getElementById('calc-age').value);
+            const height = parseInt(document.getElementById('calc-height').value);
+            const weight = parseFloat(db.logs[Object.keys(db.logs).pop()]?.weight || 70); // Usa o último peso ou 70
+            const goal = document.getElementById('calc-goal').value;
+
+            if(!age || !height) return alert("Preencha idade e altura para calcular.");
+
+            // Harris-Benedict para Mulheres (Assumindo público ClaraMente)
+            let tmb = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
+            let water = Math.round(weight * 35);
             
-            // Exibir Data
-            const hoje = new Date();
-            document.getElementById('display-date').innerText = hoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+            let protein, calories;
+            if(goal === 'lose') { calories = tmb * 1.1; protein = weight * 2; }
+            else if(goal === 'gain') { calories = tmb * 1.5; protein = weight * 2.2; }
+            else { calories = tmb * 1.3; protein = weight * 1.5; }
 
-            // Cálculo do Dia
-            const inicio = new Date(state.startDate);
-            const diffDias = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
-            const diaAtual = Math.min(Math.max(diffDias, 1), 21);
-            document.getElementById('current-day-num').innerText = `${diaAtual}/21`;
-
-            // Cálculo de Peso Perdido
-            const logsArray = Object.values(state.logs);
-            if(logsArray.length > 0) {
-                const ultimoLog = logsArray[logsArray.length - 1];
-                const perda = state.startWeight - ultimoLog.weight;
-                document.getElementById('weight-loss').innerText = `${perda.toFixed(1)} kg`;
-            }
-
-            // Barra de Progresso
-            const totalRegistros = Object.keys(state.logs).length;
-            const perc = (totalRegistros / 21) * 100;
-            document.getElementById('progress-bar').style.width = perc + '%';
-            document.getElementById('progress-text').innerText = `${Math.round(perc)}% concluído (${totalRegistros}/21 dias)`;
+            document.getElementById('calc-results').style.display = 'block';
+            document.getElementById('results-content').innerHTML = `
+                💧 Água: ${water}ml/dia<br>
+                🔥 Calorias Base: ${Math.round(calories)} kcal<br>
+                🥩 Proteína: ${Math.round(protein)}g/dia<br>
+                🍞 Carbos: ${Math.round((calories * 0.4) / 4)}g/dia
+            `;
         }
 
-        function saveDailyLog() {
-            const peso = document.getElementById('log-weight').value;
-            if(!peso) return alert("Por favor, informe seu peso de hoje.");
+        // --- SALVAR REGISTRO COM OFENSIVA ---
+        function saveEntry() {
+            const hoje = new Date().toLocaleDateString();
+            if(db.logs[hoje]) return alert("Você já brilhou hoje!");
 
-            // Identificar qual dia da jornada é hoje para salvar no lugar certo
-            const inicio = new Date(state.startDate);
-            const hoje = new Date();
-            const diaJornada = Math.floor((hoje - inicio) / (1000 * 60 * 60 * 24)) + 1;
+            const lastEntry = db.user.lastEntry;
+            const ontem = new Date(); ontem.setDate(ontem.getDate() - 1);
+            
+            if(lastEntry === ontem.toLocaleDateString()) db.user.streak++;
+            else if(lastEntry !== hoje) db.user.streak = 1;
 
-            state.logs[diaJornada] = {
-                weight: parseFloat(peso),
-                fasting: document.getElementById('log-fasting').value,
-                food: document.getElementById('log-food').value,
+            db.logs[hoje] = {
+                weight: document.getElementById('log-weight').value,
                 water: document.getElementById('log-water').value,
-                status: document.getElementById('log-status').value,
                 timestamp: new Date().getTime()
             };
-
-            saveState();
-            alert("Dia " + diaJornada + " registrado com sucesso!");
-            goTo('home');
+            db.user.lastEntry = hoje;
+            save();
+            alert("Evolução salva! 🔥");
+            go('home');
         }
 
-        // Verificação Inicial: Se já tem cadastro, vai direto pro Home
+        function toggleTheme() {
+            const theme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', theme);
+            db.user.theme = theme;
+            save();
+        }
+
         window.onload = () => {
-            if(state.startDate) {
-                goTo('home');
-            }
+            document.body.setAttribute('data-theme', db.user.theme);
+            refreshDashboard();
         };
     </script>
 </body>
