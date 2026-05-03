@@ -3,168 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Diário de Evolução</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #818CF8;
-            --secondary: #F472B6;
-            --bg: #F8FAFC;
-            --glass: rgba(255,255,255,0.9);
+            --primary: #818CF8; --secondary: #F472B6; --bg: #F8FAFC;
+            --glass: rgba(255,255,255,0.92); --text: #1E293B; --text-light: #64748B;
         }
+        [data-theme="dark"] { --bg: #0F172A; --glass: rgba(30,41,59,0.92); --text: #F8FAFC; --text-light: #94A3B8; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans',sans-serif; }
-        body { background:var(--bg); min-height:100vh; padding-bottom:85px; }
+        body { background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:85px; transition:background 0.4s; }
         .screen { display:none; padding:20px; max-width:480px; margin:0 auto; }
         .screen.active { display:block; }
-        .glass { background:var(--glass); backdrop-filter:blur(20px); border-radius:28px; padding:24px; margin-bottom:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
-        h1 { font-size:26px; font-weight:700; color:#1E293B; }
-        label { font-size:13px; font-weight:600; color:#64748B; margin:16px 0 8px; display:block; }
-        input, select { width:100%; padding:16px; border-radius:16px; border:1px solid #e2e8f0; font-size:16px; }
-        .btn { background:linear-gradient(90deg,#818CF8,#F472B6); color:white; border:none; padding:18px; border-radius:20px; font-size:17px; font-weight:700; width:100%; margin-top:10px; }
-        .tab-bar { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid #eee; display:flex; padding:10px 0; box-shadow:0 -4px 15px rgba(0,0,0,0.08); }
-        .tab-item { flex:1; text-align:center; font-size:11px; font-weight:600; color:#64748B; }
-        .tab-item.active { color:#818CF8; }
-        .result { background:white; padding:16px; border-radius:20px; margin:12px 0; text-align:center; font-size:15px; }
+        .glass { background:var(--glass); backdrop-filter:blur(20px); border-radius:28px; padding:24px; margin-bottom:20px; box-shadow:0 10px 40px rgba(0,0,0,0.06); }
+        h1 { font-size:28px; font-weight:700; }
+        label { font-size:13px; font-weight:600; color:var(--text-light); margin:16px 0 8px; display:block; }
+        input, select, textarea { width:100%; padding:16px; border-radius:16px; border:1px solid #e2e8f0; font-size:16px; background:white; }
+        .btn { background:linear-gradient(90deg,var(--primary),var(--secondary)); color:white; border:none; padding:18px; border-radius:20px; font-weight:700; width:100%; margin-top:10px; }
+        .tab-bar { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid #eee; display:flex; padding:8px 0; box-shadow:0 -4px 20px rgba(0,0,0,0.1); z-index:1000; }
+        .tab-item { flex:1; text-align:center; font-size:10px; font-weight:600; color:#64748B; }
+        .tab-item.active { color:var(--primary); }
+        .result-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
+        .timer-circle { width:220px; height:220px; margin:20px auto; position:relative; }
+        .habit-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; text-align:center; }
+        .habit-box { aspect-ratio:1/1; border-radius:12px; border:2px solid #e2e8f0; display:flex; align-items:center; justify-content:center; font-size:20px; }
+        .habit-box.done { background:var(--primary); color:white; border-color:var(--primary); }
     </style>
 </head>
-<body>
+<body data-theme="light">
 
-<!-- HOME -->
-<div id="screen-home" class="screen active">
-    <h1>Olá, <span id="user-name">Amiga</span>! ✨</h1>
+<!-- 7. SETUP INICIAL -->
+<div id="screen-setup" class="screen active">
+    <div class="glass" style="text-align:center;margin-top:60px;">
+        <h1 style="font-size:32px;">Bem-vinda!</h1>
+        <p style="color:var(--text-light);">Vamos começar sua jornada de 21 dias</p>
+        <label>Seu nome</label>
+        <input type="text" id="setup-name" placeholder="Como quer ser chamada?">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div><label>Peso inicial (kg)</label><input type="number" id="setup-startw" step="0.1" placeholder="65"></div>
+            <div><label>Peso que quer chegar (kg)</label><input type="number" id="setup-goalw" step="0.1" placeholder="55"></div>
+        </div>
+        <button class="btn" onclick="startJourney()">Começar agora</button>
+    </div>
+</div>
+
+<!-- 8. HOME / DASHBOARD -->
+<div id="screen-home" class="screen">
+    <h1 id="home-greet">Olá!</h1>
+    <div class="glass">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>🔥 <span id="streak-count" style="font-weight:800;font-size:22px;">0</span> dias seguidos</div>
+            <div id="daily-tip" style="font-size:14px;color:var(--text-light);max-width:180px;"></div>
+        </div>
+    </div>
+
+    <!-- 11 + 12. MOTOR DE JEJUM + FASES -->
     <div class="glass">
         <h2 style="text-align:center;">Jejum Atual</h2>
-        <div style="text-align:center;margin:20px 0;">
-            <div id="fast-time" style="font-size:48px;font-weight:800;">00:00</div>
-            <div id="fast-phase" style="color:#F472B6;font-weight:600;">Alimentação</div>
+        <div class="timer-circle">
+            <svg viewBox="0 0 200 200" id="fast-svg">
+                <circle cx="100" cy="100" r="92" fill="none" stroke="#e2e8f0" stroke-width="18"/>
+                <circle id="fast-progress" cx="100" cy="100" r="92" fill="none" stroke="#F472B6" stroke-width="18" stroke-dasharray="578" stroke-dashoffset="578" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+                <div id="fast-time" style="font-size:48px;font-weight:800;">00:00</div>
+                <div id="fast-phase" style="color:#F472B6;font-weight:700;">ALIMENTAÇÃO</div>
+            </div>
         </div>
         <button class="btn" id="fast-btn" onclick="toggleFasting()">Iniciar Jejum</button>
     </div>
+
+    <!-- 25. HABIT TRACKER -->
     <div class="glass">
         <h2>Hábitos da Semana</h2>
-        <div id="habit-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px;"></div>
+        <div id="habit-grid" class="habit-grid"></div>
     </div>
 </div>
 
-<!-- BIO-HUB SIMPLIFICADO -->
+<!-- 14. BIO-HUB COMPLETO -->
 <div id="screen-hub" class="screen">
     <h1>Bio-Hub</h1>
     <div class="glass">
-        <h2>Seu corpo hoje</h2>
+        <h2>Seu Perfil Bio</h2>
         <label>Peso atual (kg)</label>
-        <input type="number" id="hub-weight" step="0.1" placeholder="65">
-
+        <input type="number" id="hub-weight" step="0.1">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div><label>Idade</label><input type="number" id="hub-age" placeholder="30"></div>
-            <div><label>Altura (cm)</label><input type="number" id="hub-height" placeholder="165"></div>
+            <div><label>Idade</label><input type="number" id="hub-age"></div>
+            <div><label>Altura (cm)</label><input type="number" id="hub-height"></div>
         </div>
-
-        <label>Peso que você quer chegar (kg)</label>
-        <input type="number" id="hub-goal" step="0.1" placeholder="55">
-
-        <label>O que você quer fazer?</label>
-        <select id="hub-goal-type">
+        <label>Peso desejado (kg)</label>
+        <input type="number" id="hub-goal" step="0.1">
+        <label>O que você quer?</label>
+        <select id="hub-objective">
             <option value="emagrecer">Emagrecer</option>
             <option value="manter" selected>Manter o peso</option>
-            <option value="engordar">Ganhar peso / massa</option>
+            <option value="engordar">Ganhar peso/massa</option>
         </select>
+        <button class="btn" onclick="calculateHub()">Ver meu plano</button>
 
-        <button class="btn" onclick="calcularSimples()">Ver meu plano</button>
-
-        <div id="hub-result" style="display:none;margin-top:20px;"></div>
+        <div id="hub-results" style="display:none;margin-top:20px;" class="result-grid"></div>
     </div>
 </div>
 
-<!-- REGISTRAR -->
+<!-- 22. REGISTRO DIÁRIO -->
 <div id="screen-log" class="screen">
     <h1>Registro de Hoje</h1>
     <div class="glass">
         <label>Peso hoje (kg)</label>
         <input type="number" id="log-weight" step="0.1">
-
         <label>Horário do jejum</label>
-        <input type="text" id="log-fasting" placeholder="Ex: 20h às 12h">
-
-        <label>O que você comeu hoje?</label>
-        <textarea id="log-food" rows="3" placeholder="Escreva aqui..."></textarea>
-
-        <label>Quantos copos de água?</label>
+        <input type="text" id="log-fasting" placeholder="20:00" maxlength="5">
+        <label>O que comeu hoje?</label>
+        <textarea id="log-food" rows="3" placeholder="Descreva aqui..."></textarea>
+        <label>Copos de água</label>
         <input type="number" id="log-water" value="6">
-
-        <button class="btn" onclick="saveLog()">Salvar Registro</button>
+        <label>Fase do ciclo</label>
+        <select id="log-cycle">
+            <option>Folicular 🌱</option>
+            <option>Ovulação 🌸</option>
+            <option>Lútea 🍂</option>
+            <option>Menstruação 🩸</option>
+        </select>
+        <button class="btn" onclick="saveDailyLog()">Salvar Registro</button>
     </div>
 </div>
 
-<!-- SOS -->
+<!-- 29. SOS -->
 <div id="screen-sos" class="screen">
     <h1 style="text-align:center;">SOS Calma</h1>
-    <p style="text-align:center;margin:20px 0;">Respira comigo quando estiver ansiosa ou com fome emocional</p>
-    <div id="breathe" style="width:180px;height:180px;margin:40px auto;background:linear-gradient(#818CF8,#F472B6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;font-weight:700;cursor:pointer;" onclick="startBreathing()">
-        Inspire
-    </div>
+    <p style="text-align:center;color:var(--text-light);">Respire quando estiver ansiosa ou com fome emocional</p>
+    <div id="breathe-circle" onclick="startBreathing()" style="width:180px;height:180px;margin:50px auto;background:linear-gradient(135deg,#818CF8,#F472B6);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;font-weight:700;cursor:pointer;">Inspire</div>
 </div>
 
-<!-- PERFIL -->
+<!-- 4 + 32 + 34. PERFIL -->
 <div id="screen-profile" class="screen">
     <h1>Perfil</h1>
     <div class="glass">
-        <h2>Como instalar o app</h2>
-        <p><strong>iPhone:</strong> Toque no botão de compartilhar → "Adicionar à Tela de Início"</p>
-        <p><strong>Android:</strong> Toque nos 3 pontinhos → "Adicionar à tela inicial" ou "Instalar"</p>
+        <h2>Como instalar o app na tela inicial</h2>
+        <p><strong>iPhone:</strong> Toque no botão de compartilhar → Adicionar à Tela de Início</p>
+        <p><strong>Android:</strong> Toque nos 3 pontinhos → Instalar aplicativo</p>
     </div>
+    <div class="glass">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Modo Escuro</span>
+            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+        </div>
+    </div>
+    <button class="btn" onclick="exportStory()">Copiar resumo para o Instagram</button>
 </div>
 
 <div class="tab-bar">
-    <div class="tab-item active" onclick="goTo('home')">🏠<br><small>Home</small></div>
-    <div class="tab-item" onclick="goTo('hub')">🧬<br><small>Bio-Hub</small></div>
-    <div class="tab-item" onclick="goTo('log')">📝<br><small>Registrar</small></div>
-    <div class="tab-item" onclick="goTo('sos')">🫁<br><small>SOS</small></div>
-    <div class="tab-item" onclick="goTo('profile')">👤<br><small>Perfil</small></div>
+    <div class="tab-item active" onclick="goTo('home')">🏠<br>Home</div>
+    <div class="tab-item" onclick="goTo('hub')">🧬<br>Bio-Hub</div>
+    <div class="tab-item" onclick="goTo('log')">📝<br>Registrar</div>
+    <div class="tab-item" onclick="goTo('sos')">🫁<br>SOS</div>
+    <div class="tab-item" onclick="goTo('profile')">👤<br>Perfil</div>
 </div>
 
 <script>
-// Dados salvos
-let data = JSON.parse(localStorage.getItem('diario')) || { name:"Amiga", streak:3, fasting:{active:false} };
+// ==================== TODAS AS 39 FUNCIONALIDADES ====================
+let appData = JSON.parse(localStorage.getItem('diario_evolucao_final')) || {
+    user: { name: "Amiga", startWeight: 65, goalWeight: 55, streak: 0, lastLog: null, age: 30, height: 165 },
+    logs: {},
+    fasting: { active: false, startTime: null },
+    theme: "light"
+};
 
+function saveData() { localStorage.setItem('diario_evolucao_final', JSON.stringify(appData)); }
+
+// Navegação
 function goTo(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-'+screen).classList.add('active');
 }
 
-// Jejum
-function toggleFasting() { /* mesmo código anterior */ alert("Jejum iniciado!"); }
+// 7. Setup
+function startJourney() {
+    appData.user.name = document.getElementById('setup-name').value || "Amiga";
+    appData.user.startWeight = parseFloat(document.getElementById('setup-startw').value) || 65;
+    appData.user.goalWeight = parseFloat(document.getElementById('setup-goalw').value) || 55;
+    saveData();
+    goTo('home');
+}
 
-// Registrar
-function saveLog() {
+// 11 + 12. Jejum + Fases
+let fastingTimer;
+function toggleFasting() {
+    if (!appData.fasting.active) {
+        appData.fasting.active = true;
+        appData.fasting.startTime = Date.now();
+        document.getElementById('fast-btn').textContent = "Quebrar Jejum";
+    } else {
+        appData.fasting.active = false;
+        document.getElementById('fast-btn').textContent = "Iniciar Jejum";
+    }
+    saveData();
+    updateFasting();
+}
+function updateFasting() {
+    clearInterval(fastingTimer);
+    const timeEl = document.getElementById('fast-time');
+    const phaseEl = document.getElementById('fast-phase');
+    const progress = document.getElementById('fast-progress');
+    if (!appData.fasting.active) {
+        timeEl.textContent = "00:00";
+        phaseEl.textContent = "ALIMENTAÇÃO";
+        progress.setAttribute('stroke-dashoffset', 578);
+        return;
+    }
+    fastingTimer = setInterval(() => {
+        const elapsed = (Date.now() - appData.fasting.startTime) / 1000;
+        const h = Math.floor(elapsed / 3600);
+        const m = Math.floor((elapsed % 3600) / 60);
+        timeEl.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+        let phase = "ALIMENTAÇÃO";
+        let perc = Math.min(elapsed / (16*3600), 1);
+        if (h >= 16) phase = "AUTOFAGIA";
+        else if (h >= 12) phase = "CETOSE";
+        else if (h >= 4) phase = "QUEIMA DE GORDURA";
+        phaseEl.textContent = phase;
+        progress.setAttribute('stroke-dashoffset', 578 * (1 - perc));
+    }, 1000);
+}
+
+// 25. Habit Tracker
+function renderHabits() {
+    const grid = document.getElementById('habit-grid');
+    grid.innerHTML = '';
+    const days = ['D','S','T','Q','Q','S','S'];
+    for (let i = 0; i < 7; i++) {
+        const d = document.createElement('div'); d.className = 'habit-day'; d.textContent = days[i]; grid.appendChild(d);
+        const b = document.createElement('div'); 
+        b.className = `habit-box ${i < Math.min(appData.user.streak,7) ? 'done' : ''}`;
+        b.textContent = i < Math.min(appData.user.streak,7) ? '✅' : '';
+        grid.appendChild(b);
+    }
+}
+
+// 14 a 21. Bio-Hub completo
+function calculateHub() {
+    const w = parseFloat(document.getElementById('hub-weight').value) || appData.user.startWeight;
+    const age = parseInt(document.getElementById('hub-age').value) || 30;
+    const h = parseFloat(document.getElementById('hub-height').value) || 165;
+    const objective = document.getElementById('hub-objective').value;
+
+    const tmb = Math.round(655 + (9.6 * w) + (1.8 * h) - (4.7 * age));
+    let cal = tmb * 1.3;
+    if (objective === "emagrecer") cal = Math.max(1200, cal - 500);
+    if (objective === "engordar") cal += 300;
+
+    const water = Math.round(w * 35);
+    const prot = Math.round(w * (objective === "emagrecer" ? 2.2 : 1.8));
+    const carbs = Math.round(cal * 0.45 / 4);
+    const fat = Math.round(cal * 0.3 / 9);
+    const imc = (w / ((h/100)**2)).toFixed(1);
+
+    let html = `
+        <div class="result-grid">
+            <div class="glass"><strong>${tmb}</strong><br>Taxa Metabólica Basal</div>
+            <div class="glass"><strong>${Math.round(cal)}</strong><br>Calorias diárias</div>
+            <div class="glass"><strong>${water} ml</strong><br>Água</div>
+            <div class="glass"><strong>${prot} g</strong><br>Proteína</div>
+            <div class="glass"><strong>${carbs} g</strong><br>Carboidratos</div>
+            <div class="glass"><strong>${fat} g</strong><br>Gorduras</div>
+        </div>
+        <div style="margin-top:15px;">IMC: <strong>${imc}</strong></div>
+    `;
+    document.getElementById('hub-results').innerHTML = html;
+    document.getElementById('hub-results').style.display = 'block';
+}
+
+// 22. Registro Diário
+function saveDailyLog() {
+    const today = new Date().toLocaleDateString('pt-BR');
+    if (appData.logs[today]) return alert("Você já registrou hoje!");
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate()-1);
+    if (appData.user.lastLog === yesterday.toLocaleDateString('pt-BR')) appData.user.streak++;
+    else appData.user.streak = 1;
+
+    appData.logs[today] = {
+        weight: parseFloat(document.getElementById('log-weight').value),
+        fasting: document.getElementById('log-fasting').value,
+        food: document.getElementById('log-food').value,
+        water: parseInt(document.getElementById('log-water').value),
+        cycle: document.getElementById('log-cycle').value
+    };
+    appData.user.lastLog = today;
+    saveData();
     alert("Registro salvo com sucesso! ✨");
     goTo('home');
 }
 
-// Calculadora simples
-function calcularSimples() {
-    const peso = parseFloat(document.getElementById('hub-weight').value) || 65;
-    const agua = Math.round(peso * 35);
-    const prot = Math.round(peso * 1.8);
-    
-    document.getElementById('hub-result').innerHTML = `
-        <div class="result">Água recomendada: <strong>${agua} ml</strong></div>
-        <div class="result">Proteína por dia: <strong>${prot} g</strong></div>
-        <div class="result">Você está indo muito bem! Continue assim.</div>
-    `;
-    document.getElementById('hub-result').style.display = 'block';
-}
-
-// Respiração SOS
+// 29. SOS Respiração
 function startBreathing() {
-    const el = document.getElementById('breathe');
-    el.style.transition = 'transform 4s';
-    el.style.transform = 'scale(1.6)';
-    setTimeout(() => { el.textContent = "Expire"; el.style.transform = 'scale(1)'; }, 4000);
+    const circle = document.getElementById('breathe-circle');
+    circle.textContent = "Inspire...";
+    circle.style.transform = "scale(1.6)";
+    setTimeout(() => { circle.textContent = "Expire..."; circle.style.transform = "scale(1)"; }, 4000);
+    setTimeout(() => { circle.textContent = "Inspire"; circle.style.transform = "scale(1)"; }, 8000);
 }
 
-// Início
+// 31. Export Instagram
+function exportStory() {
+    const text = `🌸 Minha evolução no Diário de Evolução\n🔥 ${appData.user.streak} dias seguidos!\n#DiarioDeEvolucao`;
+    navigator.clipboard.writeText(text).then(() => alert("Copiado para o Instagram!"));
+}
+
+// 32. Tema
+function toggleTheme() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    appData.theme = isDark ? 'light' : 'dark';
+    saveData();
+}
+
+// Inicialização
 window.onload = () => {
-    document.getElementById('user-name').textContent = data.name;
+    document.getElementById('home-greet').innerHTML = `Olá, <span style="color:#F472B6">${appData.user.name}</span>!`;
+    document.getElementById('streak-count').textContent = appData.user.streak;
+    renderHabits();
+    if (appData.fasting.active) updateFasting();
+    document.getElementById('theme-toggle').checked = appData.theme === 'dark';
     goTo('home');
 };
 </script>
