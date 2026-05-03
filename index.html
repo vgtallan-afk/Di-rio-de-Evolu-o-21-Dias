@@ -1,367 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Diário de Evolução</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #818CF8; --secondary: #F472B6; --accent: #F43F5E;
-            --bg: #F8FAFC; --card: rgba(255, 255, 255, 0.8); --border: rgba(255, 255, 255, 0.5);
-            --text: #1E293B; --text-light: #64748B; --safe: #34D399; --warn: #FBBF24;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evolução Pro</title>
 
-        [data-theme="dark"] {
-            --bg: #09090F; --card: rgba(20, 20, 35, 0.8); --border: rgba(255, 255, 255, 0.05);
-            --text: #F8FAFC; --text-light: #94A3B8;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.4s ease; padding-bottom: 120px; }
+<style>
+body {
+  margin:0;
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:#f5f7fb;
+}
 
-        /* Helpers & UI Components */
-        .glass { background: var(--card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 30px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 18px; border-radius: 22px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 10px 25px rgba(129, 140, 248, 0.3); transition: 0.2s; }
-        .btn:active { transform: scale(0.97); }
-        .screen { display: none; padding: 25px 20px; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .screen.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.screen { display:none; padding:20px; }
+.active { display:block; }
 
-        /* Typography */
-        h1 { font-size: 28px; font-weight: 800; letter-spacing: -1.2px; margin-bottom: 5px; }
-        h2 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 15px; }
-        label { display: block; font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.8px; }
+.card {
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:15px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.05);
+}
 
-        /* Fasting Timer */
-        .timer-wrap { position: relative; width: 230px; height: 230px; margin: 20px auto; display: flex; align-items: center; justify-content: center; }
-        .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-        .timer-bg { fill: none; stroke: rgba(0,0,0,0.03); stroke-width: 12; }
-        .timer-progress { fill: none; stroke: var(--primary); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 628; stroke-dashoffset: 628; transition: stroke-dashoffset 1s linear; }
-        .timer-content { position: absolute; text-align: center; }
-        .timer-val { font-size: 38px; font-weight: 800; display: block; }
-        .timer-phase { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; margin-top: 4px; }
+button {
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:15px;
+  background:#6366F1;
+  color:white;
+  font-weight:bold;
+}
 
-        /* IMC Ruler */
-        .imc-ruler { height: 10px; border-radius: 10px; background: linear-gradient(to right, #60A5FA 0%, #34D399 25%, #FBBF24 60%, #EF4444 100%); position: relative; margin: 30px 0 10px; }
-        .imc-pointer { position: absolute; top: -6px; width: 22px; height: 22px; background: white; border: 4px solid var(--text); border-radius: 50%; transform: translateX(-50%); transition: 1s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+input, select {
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
 
-        /* Habit Grid */
-        .habit-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
-        .habit-day { font-size: 10px; color: var(--text-light); font-weight: 700; }
-        .habit-box { aspect-ratio: 1; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
-        .habit-box.done { background: var(--primary); border-color: var(--primary); color: white; }
+.tabbar {
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  border-top:1px solid #eee;
+}
 
-        /* Tab Bar */
-        .nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: var(--card); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 35px; display: flex; justify-content: space-around; padding: 16px 10px; z-index: 1000; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; opacity: 0.35; transition: 0.3s; flex: 1; text-decoration: none; color: inherit; border: none; background: none; }
-        .nav-btn.active { opacity: 1; color: var(--primary); transform: translateY(-3px); }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
-        .nav-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* Forms */
-        input, select, textarea { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); font-size: 16px; margin-bottom: 15px; outline: none; color: var(--text); }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-        /* SOS Breathing */
-        .breathe-ring { width: 180px; height: 180px; background: var(--primary); border-radius: 50%; margin: 60px auto; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; transition: 4s ease-in-out; box-shadow: 0 0 50px rgba(129, 140, 248, 0.4); }
-        .breathe-ring.expand { transform: scale(1.7); opacity: 0.6; }
-    </style>
+.tab {
+  text-align:center;
+  font-size:12px;
+}
+</style>
 </head>
-<body data-theme="light">
 
-    <div id="scr-setup" class="screen">
-        <div style="height: 10vh"></div>
-        <h1>Bem-vindo.</h1>
-        <p style="color: var(--text-light); margin-bottom: 40px;">Vamos configurar o seu Diário de Evolução.</p>
-        <div class="glass">
-            <label>Seu Nome</label>
-            <input type="text" id="set-name" placeholder="Como te chamamos?">
-            <div class="input-row">
-                <div><label>Peso Inicial (kg)</label><input type="number" id="set-w" step="0.1"></div>
-                <div><label>Peso Alvo (kg)</label><input type="number" id="set-gw" step="0.1"></div>
-            </div>
-            <button class="btn" onclick="initApp()">Iniciar Jornada</button>
-        </div>
-    </div>
+<body>
 
-    <div id="scr-home" class="screen active">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h1 id="user-greet">Olá!</h1>
-            <div style="background: rgba(244,114,182,0.15); color: var(--secondary); padding: 8px 16px; border-radius: 25px; font-weight: 800; font-size: 14px;">🔥 <span id="val-streak">0</span></div>
-        </div>
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="card">
+    <h2 id="welcome">Olá</h2>
+    <p>🔥 Streak: <span id="streak">0</span></p>
+    <button onclick="go('log')">Registrar Dia</button>
+  </div>
+</div>
 
-        <div class="glass">
-            <h2 style="text-align: center; color: var(--text-light); font-size: 13px;">Status do Jejum</h2>
-            <div class="timer-wrap">
-                <svg class="timer-svg" viewBox="0 0 210 210">
-                    <circle class="timer-bg" cx="105" cy="105" r="100"/>
-                    <circle id="timer-ring" class="timer-progress" cx="105" cy="105" r="100"/>
-                </svg>
-                <div class="timer-content">
-                    <span class="timer-val" id="val-timer">00:00:00</span>
-                    <span class="timer-phase" id="val-phase">Alimentação</span>
-                </div>
-            </div>
-            <button class="btn" id="btn-fast" onclick="toggleFast()">Iniciar Jejum</button>
-        </div>
+<!-- LOG -->
+<div id="log" class="screen">
+  <div class="card">
+    <h3>Registro</h3>
 
-        <div class="glass">
-            <h2>Hábitos da Semana</h2>
-            <div class="habit-grid" id="grid-habits">
-                </div>
-        </div>
-    </div>
+    <input id="weight" type="number" placeholder="Peso (kg)">
 
-    <div id="scr-hub" class="screen">
-        <h1>Bio-Hub.</h1>
-        <div class="glass">
-            <h2>Análise de Saúde</h2>
-            <div class="input-row">
-                <div><label>Idade</label><input type="number" id="h-age"></div>
-                <div><label>Altura (cm)</label><input type="number" id="h-height"></div>
-            </div>
-            <button class="btn" onclick="runCalcs()">Mapear Bio-Métricas</button>
+    <input id="time" placeholder="Horário jejum (HH:MM)">
 
-            <div id="hub-results" style="display: none; margin-top: 25px; animation: fade 0.5s ease;">
-                <div style="display: flex; justify-content: space-between;">
-                    <label>Índice de Massa Corporal</label>
-                    <span id="txt-imc" style="font-size: 12px; font-weight: 900;">--</span>
-                </div>
-                <div class="imc-ruler"><div class="imc-pointer" id="imc-ptr"></div></div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;">
-                    <div class="glass" style="margin:0; padding:15px; text-align:center;">
-                        <label>Hidratação</label><strong id="res-water">--</strong>
-                    </div>
-                    <div class="glass" style="margin:0; padding:15px; text-align:center;">
-                        <label>Proteína</label><strong id="res-prot">--</strong>
-                    </div>
-                </div>
-                <div class="glass" style="margin-top:15px; text-align:center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color:white; border:none;">
-                    <label style="color:rgba(255,255,255,0.8)">Projeção de Meta</label>
-                    <p id="res-time" style="font-weight: 700;"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="time-error" style="color:red; display:none;">Horário inválido</div>
 
-    <div id="scr-log" class="screen">
-        <h1>Registro.</h1>
-        <div class="glass">
-            <label>Peso de Hoje (kg)</label>
-            <input type="number" id="l-w" step="0.1">
-            
-            <label>Início do Jejum (HH:MM)</label>
-            <input type="text" id="l-f-start" placeholder="00:00" maxlength="5">
-            
-            <label>Fase do Ciclo</label>
-            <select id="l-cycle">
-                <option>Folicular 🌱</option>
-                <option>Ovulação 🌸</option>
-                <option>Lútea 🍂</option>
-                <option>Menstruação 🩸</option>
-            </select>
-            
-            <label>Nível de Estresse</label>
-            <select id="l-stress">
-                <option>Zen 🧘‍♀️</option>
-                <option>Normal 🙂</option>
-                <option>Alto 🤯</option>
-            </select>
+    <button onclick="saveLog()">Salvar</button>
+  </div>
+</div>
 
-            <button class="btn" onclick="saveLog()">Finalizar Registro</button>
-        </div>
-    </div>
+<!-- CALCULADORAS -->
+<div id="calc" class="screen">
+  <div class="card">
+    <h3>Calculadoras</h3>
 
-    <div id="scr-sos" class="screen">
-        <h1 style="text-align: center;">SOS.</h1>
-        <p style="text-align: center; color: var(--text-light);">Fome emocional ou ansiedade? Respire.</p>
-        <div class="breathe-ring" id="b-ring">Iniciar</div>
-        <button class="btn" onclick="startSOS()">Começar Ciclo de Calma</button>
-    </div>
+    <input id="c-weight" type="number" placeholder="Peso (kg)">
+    <input id="c-height" type="number" placeholder="Altura (cm)">
+    <input id="c-age" type="number" placeholder="Idade">
 
-    <div id="scr-profile" class="screen">
-        <h1>Perfil.</h1>
-        <div class="glass">
-            <h2>Instalar o App</h2>
-            <div style="font-size: 13px; color: var(--text-light); line-height: 1.6;">
-                <strong>iOS:</strong> Partilhar > Adicionar ao Ecrã Principal<br>
-                <strong>Android:</strong> 3 Pontos > Instalar Aplicação
-            </div>
-        </div>
-        <div class="glass">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="margin:0">Modo Escuro</label>
-                <input type="checkbox" id="theme-sw" style="width: auto; margin:0;" onchange="toggleTheme()">
-            </div>
-        </div>
-        <button class="btn" style="background: var(--text);" onclick="exportProgress()">Copiar Resumo Instagram</button>
-        <p style="text-align: center; font-size: 10px; margin-top: 20px; opacity: 0.5;">Diário de Evolução vFinal</p>
-    </div>
+    <select id="c-goal">
+      <option value="1">Emagrecer</option>
+      <option value="2">Manter</option>
+      <option value="3">Ganhar</option>
+    </select>
 
-    <div class="nav">
-        <button class="nav-btn active" onclick="go('home')" id="n-home"><span class="nav-icon">✨</span><span class="nav-label">Home</span></button>
-        <button class="nav-btn" onclick="go('hub')" id="n-hub"><span class="nav-icon">🧬</span><span class="nav-label">Hub</span></button>
-        <button class="nav-btn" onclick="go('log')" id="n-log"><span class="nav-icon">📝</span><span class="nav-label">Log</span></button>
-        <button class="nav-btn" onclick="go('sos')" id="n-sos"><span class="nav-icon">🫁</span><span class="nav-label">SOS</span></button>
-        <button class="nav-btn" onclick="go('profile')" id="n-profile"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
-    </div>
+    <button onclick="runCalc()">Calcular</button>
 
-    <script>
-        // --- DATA ENGINE ---
-        let state = JSON.parse(localStorage.getItem('evol_vfinal')) || {
-            user: { name: '', startW: 0, goalW: 0, streak: 0, lastDate: '', theme: 'light' },
-            fast: { active: false, start: null },
-            logs: {}
-        };
+    <div id="result" style="margin-top:10px;"></div>
+  </div>
+</div>
 
-        function save() { localStorage.setItem('evol_vfinal', JSON.stringify(state)); }
+<!-- SETTINGS -->
+<div id="settings" class="screen">
+  <div class="card">
+    <h3>Ajustes</h3>
+    <p>Em breve...</p>
+  </div>
+</div>
 
-        // --- NAVIGATION ---
-        function go(s) {
-            document.querySelectorAll('.screen').forEach(scr => scr.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('scr-' + s).classList.add('active');
-            document.getElementById('n-' + s).classList.add('active');
-            window.scrollTo(0,0);
-            if(s === 'home') syncHome();
-        }
+<!-- MENU -->
+<div class="tabbar">
+  <div class="tab" onclick="go('home')">🏠<br>Início</div>
+  <div class="tab" onclick="go('calc')">📊<br>Calc</div>
+  <div class="tab" onclick="go('settings')">⚙️<br>Ajustes</div>
+</div>
 
-        // --- INITIAL SETUP ---
-        function initApp() {
-            const name = document.getElementById('set-name').value;
-            const w = document.getElementById('set-w').value;
-            const gw = document.getElementById('set-gw').value;
-            if(!name || !w) return alert("Preencha os dados básicos.");
-            state.user.name = name; state.user.startW = parseFloat(w); state.user.goalW = parseFloat(gw);
-            save(); go('home');
-        }
+<script>
 
-        // --- FASTING ENGINE ---
-        let timerInt;
-        function toggleFast() {
-            if(!state.fast.active) {
-                state.fast.active = true; state.fast.start = Date.now();
-                document.getElementById('btn-fast').innerText = "Quebrar Jejum";
-            } else {
-                state.fast.active = false; state.fast.start = null;
-                document.getElementById('btn-fast').innerText = "Iniciar Jejum";
-            }
-            save(); syncHome();
-        }
+let db = JSON.parse(localStorage.getItem("app")) || {
+  streak:0,
+  last:null,
+  logs:{}
+};
 
-        function syncHome() {
-            document.getElementById('user-greet').innerText = `Oi, ${state.user.name}!`;
-            document.getElementById('val-streak').innerText = state.user.streak;
-            clearInterval(timerInt);
+function save(){ localStorage.setItem("app", JSON.stringify(db)); }
 
-            if(state.fast.active) {
-                timerInt = setInterval(() => {
-                    const diff = Date.now() - state.fast.start;
-                    const h = Math.floor(diff/3600000);
-                    const m = Math.floor((diff%3600000)/60000);
-                    const s = Math.floor((diff%60000)/1000);
-                    document.getElementById('val-timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                    
-                    let phase = "Glicogénio"; let offset = 628 - (Math.min(h/16, 1) * 628);
-                    if(h >= 16) phase = "Autofagia ♻️"; else if(h >= 12) phase = "Cetose 🔥";
-                    document.getElementById('val-phase').innerText = phase;
-                    document.getElementById('timer-ring').style.strokeDashoffset = offset;
-                }, 1000);
-            } else {
-                document.getElementById('val-timer').innerText = "00:00:00";
-                document.getElementById('timer-ring').style.strokeDashoffset = 628;
-            }
-            renderHabits();
-        }
+function go(scr){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(scr).classList.add("active");
+}
 
-        // --- BIO-HUB CALCS ---
-        function runCalcs() {
-            const age = parseInt(document.getElementById('h-age').value);
-            const height = parseInt(document.getElementById('h-height').value);
-            const w = state.user.startW;
-            if(!age || !height) return alert("Preencha idade e altura.");
+function saveLog(){
+  let weight = document.getElementById("weight").value;
+  let time = document.getElementById("time").value;
 
-            const imc = (w / ((height/100)**2)).toFixed(1);
-            document.getElementById('val-imc').innerText = imc;
-            document.getElementById('hub-results').style.display = 'block';
+  if(!weight){ alert("Peso obrigatório"); return; }
 
-            let pos = ((imc - 15) / 25) * 100;
-            document.getElementById('imc-ptr').style.left = Math.max(0, Math.min(pos, 100)) + '%';
-            
-            document.getElementById('res-water').innerText = (w * 35 / 1000).toFixed(1) + 'L';
-            document.getElementById('res-prot').innerText = Math.round(state.user.goalW * 1.8) + 'g';
-            
-            const diff = w - state.user.goalW;
-            document.getElementById('res-time').innerText = diff > 0 ? `Meta de ${diff.toFixed(1)}kg em ~${Math.round(diff/0.5)} semanas.` : "Peso ideal atingido!";
-        }
+  let [h,m] = time.split(":").map(Number);
+  if(h>23 || m>59){
+    document.getElementById("time-error").style.display="block";
+    return;
+  }
 
-        // --- LOG ENTRY ---
-        function saveLog() {
-            const w = document.getElementById('l-w').value;
-            if(!w) return alert("Insira o peso de hoje.");
-            const hoje = new Date().toLocaleDateString();
-            state.logs[hoje] = { w, cycle: document.getElementById('l-cycle').value };
-            
-            const ontem = new Date(); ontem.setDate(ontem.getDate() - 1);
-            if(state.user.lastDate === ontem.toLocaleDateString()) state.user.streak++;
-            else if(state.user.lastDate !== hoje) state.user.streak = 1;
-            
-            state.user.lastDate = hoje; save();
-            alert("Progresso salvo!"); go('home');
-        }
+  let today = new Date().toLocaleDateString();
 
-        // --- SOS BREATHE ---
-        function startSOS() {
-            const ring = document.getElementById('b-ring');
-            ring.innerText = "Inspire"; ring.classList.add('expand');
-            setTimeout(() => { ring.innerText = "Segure"; }, 4000);
-            setTimeout(() => { ring.innerText = "Expire"; ring.classList.remove('expand'); }, 6000);
-        }
+  if(db.last){
+    let ontem = new Date();
+    ontem.setDate(ontem.getDate()-1);
 
-        // --- THEME & EXTRAS ---
-        function toggleTheme() {
-            const t = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', t);
-            state.user.theme = t; save();
-        }
+    if(db.last === ontem.toLocaleDateString()){
+      db.streak++;
+    } else if(db.last !== today){
+      db.streak=1;
+    }
+  } else {
+    db.streak=1;
+  }
 
-        function renderHabits() {
-            const grid = document.getElementById('grid-habits'); grid.innerHTML = '';
-            ['S','T','Q','Q','S','S','D'].forEach(d => {
-                grid.innerHTML += `<div class="habit-day">${d}</div>`;
-            });
-            for(let i=0; i<7; i++) {
-                grid.innerHTML += `<div class="habit-box ${i<state.user.streak ? 'done' : ''}">✔</div>`;
-            }
-        }
+  db.logs[today]={weight,time};
+  db.last=today;
 
-        function exportProgress() {
-            const text = `Diário de Evolução: 🔥 ${state.user.streak} Dias de Ofensiva! Rumo aos ${state.user.goalW}kg. #Biohacking`;
-            navigator.clipboard.writeText(text); alert("Copiado!");
-        }
+  save();
+  update();
+  go("home");
+}
 
-        // Time Mask
-        document.getElementById('l-f-start').addEventListener('input', e => {
-            let v = e.target.value.replace(/\D/g,'');
-            if(v.length >= 3) v = v.substring(0,2) + ':' + v.substring(2,4);
-            e.target.value = v;
-        });
+function update(){
+  document.getElementById("streak").innerText=db.streak;
+}
 
-        window.onload = () => {
-            if(!state.user.name) go('setup');
-            else {
-                document.body.setAttribute('data-theme', state.user.theme);
-                document.getElementById('theme-sw').checked = state.user.theme === 'dark';
-                go('home');
-            }
-        };
-    </script>
+update();
+
+function runCalc(){
+  let w = +document.getElementById("c-weight").value;
+  let h = +document.getElementById("c-height").value;
+  let a = +document.getElementById("c-age").value;
+  let g = document.getElementById("c-goal").value;
+
+  if(!w||!h||!a){ alert("Preencha tudo"); return; }
+
+  let tmb = 10*w + 6.25*h - 5*a - 161;
+
+  let cal = g==1 ? tmb*1.2-300 : g==2 ? tmb*1.3 : tmb*1.5;
+
+  let prot = w*2;
+  let water = w*35;
+
+  document.getElementById("result").innerHTML =
+    "🔥 Calorias: "+Math.round(cal)+" kcal<br>"+
+    "🥩 Proteína: "+Math.round(prot)+"g<br>"+
+    "💧 Água: "+Math.round(water)+"ml";
+}
+
+/* máscara automática de hora */
+document.getElementById("time").addEventListener("input", e=>{
+  let v=e.target.value.replace(/\D/g,'');
+  if(v.length>=3) v=v.slice(0,2)+":"+v.slice(2,4);
+  e.target.value=v;
+});
+
+</script>
+
 </body>
 </html>
